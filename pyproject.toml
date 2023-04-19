@@ -21,8 +21,8 @@ dependencies = [
     "openpyxl>=3.1.2",
     "pandas>=2.0.0",
     "pyrate-limiter>=2.10.0",
-    "requests>=2.28.2",
     "requests-ratelimiter>=0.4.0",
+    "requests>=2.28.2",
 ]
 description = "Public release of the code for paper 846 of AGILE2023"
 dynamic = [
