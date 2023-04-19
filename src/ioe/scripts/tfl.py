@@ -1,21 +1,17 @@
 from argparse import ArgumentParser
-from pathlib import Path
 
 from ioe.data.data_input import read_data
 from ioe.data.data_output import save_output_failures, save_output_journeys
 from ioe.main import compute_all_pairs_journeys
 from ioe.utils.constants import N_CORES
 
-_file_location = Path(__file__).resolve()
-_data_location = _file_location.parent
-
 
 def main(subject: str) -> None:
     """
     computes the OD matrices for a given set of student school pairs
     """
-    students = read_data(_data_location / f"{subject}_students.csv")
-    schools = read_data(_data_location / f"{subject}_schools.csv")
+    students = read_data(f"{subject}_students.csv")
+    schools = read_data(f"{subject}_schools.csv")
     journeys, failures = compute_all_pairs_journeys(
         subject,
         students,
@@ -24,12 +20,12 @@ def main(subject: str) -> None:
     )
     save_output_journeys(
         journeys,
-        _data_location / f"{subject}_student_school_journeys.csv",
+        f"{subject}_student_school_journeys.csv",
         save_output=True,
     )
     save_output_failures(
         failures,
-        _data_location / f"{subject}_student_school_failures.csv",
+        f"{subject}_student_school_failures.csv",
         save_output=True,
     )
 
