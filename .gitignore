@@ -1,0 +1,10 @@
+__pycache__
+_version.py
+.DS_Store
+.envrc
+.vscode
+*.csv
+*.egg-info
+*.tar.gz
+*.xlsx
+dist
