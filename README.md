@@ -11,7 +11,7 @@ pip install -e .
 ## Prepare the Anonymised Data
 
 ```python
-python -m ioe.scripts.prepare_data <file>.xlsx
+python -m ioe.scripts.prepare_datasets <file>.xlsx
 ```
 
 ## Prepare the Journey Data

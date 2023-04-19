@@ -1,5 +1,4 @@
 from argparse import ArgumentParser
-from pathlib import Path
 
 import pandas as pd
 from ioe.utils.constants import (
@@ -17,10 +16,6 @@ from ioe.utils.constants import (
     VALUE_NOT_APPLICABLE,
     VALUE_NOT_KNOWN,
 )
-
-_file_location = Path(__file__).resolve()
-_data_location = _file_location.parent
-
 
 SCHOOL_COLUMNS = [
     COLUMN_SCHOOL_ID,
@@ -93,7 +88,7 @@ def _parepare_school_data(df: pd.DataFrame, subject: str) -> None:
         df = _count_duplicate_schools(sub_data)
         filename = sub_subject.replace(": ", "_").lower()
         sub_data[new_columns].reset_index(drop=True).to_csv(
-            _data_location / f"{filename}_schools.csv", index=False
+            f"{filename}_schools.csv", index=False
         )
 
 
@@ -119,13 +114,13 @@ def _parepare_student_data(df: pd.DataFrame) -> None:
     for sub_subject, sub_data in df.groupby(df[COLUMN_SUBJECT]):
         filename = sub_subject.replace(": ", "_").lower()
         sub_data[STUDENT_COLUMNS].reset_index(drop=True).to_csv(
-            _data_location / f"{filename}_students.csv", index=False
+            f"{filename}_students.csv", index=False
         )
 
 
 def main(filename: str) -> None:
     """ """
-    df = pd.read_excel(_data_location / filename, sheet_name=None)
+    df = pd.read_excel(filename, sheet_name=None)
     for subject, data in df.items():
         _parepare_school_data(data, subject)
         _parepare_student_data(data)
