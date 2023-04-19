@@ -1,7 +1,9 @@
-.envrc
-*.pyc
 __pycache__
+.DS_Store
+.envrc
+.vscode
 *.csv
 *.egg-info
-*.xlsx
 *.tar.gz
+*.xlsx
+dist
