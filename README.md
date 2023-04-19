@@ -8,16 +8,10 @@ Public release of the code for paper 846 of AGILE2023
 pip install -e .
 ```
 
-## Prepare the Anonymised Data
-
-```python
-python -m ioe.scripts.prepare_datasets <file>.xlsx
-```
-
 ## Prepare the Journey Data
 
-This must be run after the step above.
+A subject may then be processed.
 
-```python
-python -m ioe.scripts.tfl <subject>
+```sh
+tfl data example_subject
 ```
