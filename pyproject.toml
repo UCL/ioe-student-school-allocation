@@ -19,7 +19,7 @@ classifiers = [
 dependencies = [
     "filelock>=3.12.0",
     "openpyxl>=3.1.2",
-    "pandas>=2.0.0",
+    "pandas<2.0.0",
     "pyrate-limiter>=2.10.0",
     "requests-ratelimiter>=0.4.0",
     "requests>=2.28.2",
@@ -45,6 +45,7 @@ optional-dependencies.dev = [
     "pre-commit",
     "tox",
 ]
+scripts.tfl = "ioe.scripts.tfl:main"
 urls.homepage = "https://github.com/UCL/ioe-student-school-allocation"
 
 [tool.mypy]
