@@ -1,0 +1,7 @@
+.envrc
+*.pyc
+__pycache__
+*.csv
+*.egg-info
+*.xlsx
+*.tar.gz
