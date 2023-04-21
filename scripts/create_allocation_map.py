@@ -87,20 +87,33 @@ def _prepare_plot(df: pd.DataFrame) -> None:
     Args:
         df: The prepared datafame.
     """
-    fig = px.scatter_mapbox(
+    fig_schools = px.scatter_mapbox(
         df,
         lat="latitude_school",
         lon="longitude_school",
-        hover_name=SCHOOL_ID,
-        hover_data=[SCHOOL_ID],
-        zoom=8,
-        height=800,
-        width=800,
+        labels={
+            SCHOOL_ID: "School ID",
+            "latitude_school": "Latitude School",
+            "longitude_school": "Longitude School",
+        },
+        color_discrete_sequence=["red"],
     )
+    fig_students = px.scatter_mapbox(
+        df,
+        lat="latitude_student",
+        lon="longitude_student",
+        labels={
+            STUDENT_ID: "Student ID",
+            "latitude_student": "Latitude Student",
+            "longitude_student": "Longitude Student",
+        },
+        color_discrete_sequence=["blue"],
+    )
+    fig_schools.add_trace(fig_students.data[0])
 
-    fig.update_layout(mapbox_style="open-street-map")
-    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-    fig.show()
+    fig_schools.update_layout(mapbox_style="open-street-map")
+    fig_schools.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    fig_schools.show()
 
 
 def main(*, subject: str, postcodes: str) -> None:
