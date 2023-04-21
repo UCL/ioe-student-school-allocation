@@ -66,6 +66,7 @@ def _prepare_data(
 
     Args:
         schools: All school data.
+        students: All students data.
         matches: The matched student-school data.
         postcodes: The UK postcode data.
 
