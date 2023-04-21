@@ -121,6 +121,7 @@ def _prepare_plot(subject: str, df: pd.DataFrame) -> None:
     """Creates the plot of points on a map.
 
     Args:
+        subject: The name of the subject to process.
         df: The prepared datafame.
     """
     # plot all schools
