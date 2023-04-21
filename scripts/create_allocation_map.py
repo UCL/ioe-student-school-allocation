@@ -82,17 +82,17 @@ def _prepare_data(
 
 
 def _prepare_connecting_lines(df: pd.DataFrame) -> pd.DataFrame:
-    """_summary_
+    """Prepares the dataframe in a format such that lines can be drawn on the map.
 
     Args:
-        df (pd.DataFrame): _description_
+        df: The prepared dataframe with NaNs removed.
 
     Returns:
-        pd.DataFrame: _description_
+        A dataframe alternating with school row followed by a student row.
     """
     return pd.DataFrame(
         {
-            "ID": df[["SE2 PP: Code", "ST: ID"]].values.reshape(-1),
+            "ID": df[[SCHOOL_ID, STUDENT_ID]].values.reshape(-1),
             "latitude": df[["latitude_school", "latitude_student"]].values.reshape(-1),
             "longitude": df[["longitude_school", "longitude_student"]].values.reshape(
                 -1
@@ -101,7 +101,7 @@ def _prepare_connecting_lines(df: pd.DataFrame) -> pd.DataFrame:
     )
 
 
-def _prepare_plot(df: pd.DataFrame) -> None:
+def _prepare_plot(subject: str, df: pd.DataFrame) -> None:
     """Creates the plot of points on a map.
 
     Args:
@@ -112,12 +112,6 @@ def _prepare_plot(df: pd.DataFrame) -> None:
         df,
         lat="latitude_school",
         lon="longitude_school",
-        hover_data=SCHOOL_ID,
-        labels={
-            SCHOOL_ID: "School ID",
-            "latitude_school": "Latitude School",
-            "longitude_school": "Longitude School",
-        },
         color_discrete_sequence=["red"],
     )
     # plot all students
@@ -125,42 +119,41 @@ def _prepare_plot(df: pd.DataFrame) -> None:
         df,
         lat="latitude_student",
         lon="longitude_student",
-        hover_data=STUDENT_ID,
-        labels={
-            STUDENT_ID: "Student ID",
-            "latitude_student": "Latitude Student",
-            "longitude_student": "Longitude Student",
-        },
         color_discrete_sequence=["blue"],
     )
     fig.add_trace(students.data[0])
 
     # connect the student-school pairs
-    # df_combined_lat_lon = _prepare_connecting_lines(df.dropna())
-    # for i in range(len(df_combined_lat_lon) // 2):
-    #     connection = px.line_mapbox(
-    #         df_combined_lat_lon.loc[i:i+1],
-    #         lat="latitude",
-    #         lon="longitude",
-    #         color_discrete_sequence=["black"]
-    #     )
-    #     fig.add_traces(connection.data)
+    df_combined_lat_lon = _prepare_connecting_lines(df.dropna())
+    for i in range(0, len(df_combined_lat_lon), 2):
+        connection = px.line_mapbox(
+            df_combined_lat_lon.loc[i : i + 1],
+            lat="latitude",
+            lon="longitude",
+            color_discrete_sequence=["black"],
+        )
+        fig.add_trace(connection.data[0])
 
     # prepare final output
     fig.update_layout(mapbox_style="open-street-map")
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    fig.write_html(
+        _file_location.parent / f"matched_student_school_pairs_{subject}.html"
+    )
     fig.show()
 
 
 def main(*, subject: str, postcodes: str) -> None:
-    """_summary_
+    """Creates a plotly map of all schools and lines
+    connecting the matched students.
 
     Args:
-        filename (str): _description_
+        subject: The name of the subject.
+        postcodes: The name of the postcode data.
     """
     schools, matches, postoces = _read_data(subject, postcodes)
     df = _prepare_data(schools, matches, postoces)
-    _prepare_plot(df)
+    _prepare_plot(subject, df)
 
 
 if __name__ == "__main__":

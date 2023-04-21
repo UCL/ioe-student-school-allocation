@@ -5,6 +5,7 @@ _version.py
 .vscode
 *.csv
 *.egg-info
+*.html
 *.tar.gz
 *.xlsx
 dist
