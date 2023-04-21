@@ -61,7 +61,7 @@ def _prepare_data(
     matches: pd.DataFrame,
     postcodes: pd.DataFrame,
 ) -> pd.DataFrame:
-    """Merges the three dataframes to make a singular dataframe with
+    """Merges the four dataframes to make a singular dataframe with
     student/school ID and the lat lon coordinates.
 
     Args:
