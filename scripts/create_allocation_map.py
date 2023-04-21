@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import pandas as pd
+import plotly.express as px
 
 _file_location = Path(__file__).resolve()
 
@@ -48,20 +49,20 @@ def _read_data(
     return schools, matches, postcodes
 
 
-def _prepare_data(subject: str, postcodes: str) -> pd.DataFrame:
+def _prepare_data(
+    schools: pd.DataFrame, matches: pd.DataFrame, postcodes: pd.DataFrame
+) -> pd.DataFrame:
     """Merges the three dataframes to make a singular dataframe with
     student/school ID and the lat lon coordinates.
 
     Args:
-        subject: The name of the subject.
-        postcodes: The name of the postcode data.
+        schools: All school data.
+        matches: The matched student-school data.
+        postcodes: The UK postcode data.
 
     Returns:
         The prepared dataframe of coordinates.
     """
-    # read in data
-    schools, matches, postcodes = _read_data(subject, postcodes)
-
     # merge all schools on the student matches
     school_merge_matches = schools.merge(
         matches, how="left", left_on=SCHOOL_POSTCODE, right_on=MATCHES_SCHOOL_POSTCODE
@@ -80,14 +81,37 @@ def _prepare_data(subject: str, postcodes: str) -> pd.DataFrame:
     ).drop(columns=[DATA_POSTCODE, STUDENT_POSTCODE])
 
 
+def _prepare_plot(df: pd.DataFrame) -> None:
+    """Creates the plot of points on a map.
+
+    Args:
+        df: The prepared datafame.
+    """
+    fig = px.scatter_mapbox(
+        df,
+        lat="latitude_school",
+        lon="longitude_school",
+        hover_name=SCHOOL_ID,
+        hover_data=[SCHOOL_ID],
+        zoom=8,
+        height=800,
+        width=800,
+    )
+
+    fig.update_layout(mapbox_style="open-street-map")
+    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    fig.show()
+
+
 def main(*, subject: str, postcodes: str) -> None:
     """_summary_
 
     Args:
         filename (str): _description_
     """
-    _prepare_data(subject, postcodes)
-    print()
+    schools, matches, postoces = _read_data(subject, postcodes)
+    df = _prepare_data(schools, matches, postoces)
+    _prepare_plot(df)
 
 
 if __name__ == "__main__":
