@@ -9,8 +9,10 @@ DATA_POSTCODE = "postcode"
 MATCHES_SCHOOL_POSTCODE = "allocation_school_postcode"
 SCHOOL_ID = "SE2 PP: Code"
 SCHOOL_POSTCODE = "SE2 PP: PC"
+SCHOOL_SUFFIX = "_school"
 STUDENT_ID = "ST: ID"
 STUDENT_POSTCODE = "ST: Term PC"
+STUDENT_SUFFIX = "_student"
 
 
 def _read_data(
@@ -77,7 +79,7 @@ def _prepare_data(
         how="left",
         left_on=STUDENT_POSTCODE,
         right_on=DATA_POSTCODE,
-        suffixes=("_school", "_student"),
+        suffixes=(SCHOOL_SUFFIX, STUDENT_SUFFIX),
     ).drop(columns=[DATA_POSTCODE, STUDENT_POSTCODE])
 
 
@@ -93,10 +95,12 @@ def _prepare_connecting_lines(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(
         {
             "ID": df[[SCHOOL_ID, STUDENT_ID]].values.reshape(-1),
-            "latitude": df[["latitude_school", "latitude_student"]].values.reshape(-1),
-            "longitude": df[["longitude_school", "longitude_student"]].values.reshape(
-                -1
-            ),
+            "latitude": df[
+                [f"latitude{SCHOOL_SUFFIX}", f"latitude{STUDENT_SUFFIX}"]
+            ].values.reshape(-1),
+            "longitude": df[
+                [f"longitude{SCHOOL_SUFFIX}", f"longitude{STUDENT_SUFFIX}"]
+            ].values.reshape(-1),
         }
     )
 
@@ -110,15 +114,15 @@ def _prepare_plot(subject: str, df: pd.DataFrame) -> None:
     # plot all schools
     fig = px.scatter_mapbox(
         df,
-        lat="latitude_school",
-        lon="longitude_school",
+        lat=f"latitude{SCHOOL_SUFFIX}",
+        lon=f"longitude{SCHOOL_SUFFIX}",
         color_discrete_sequence=["red"],
     )
     # plot all students
     students = px.scatter_mapbox(
         df,
-        lat="latitude_student",
-        lon="longitude_student",
+        lat=f"latitude{STUDENT_SUFFIX}",
+        lon=f"longitude{STUDENT_SUFFIX}",
         color_discrete_sequence=["blue"],
     )
     fig.add_trace(students.data[0])
