@@ -15,10 +15,15 @@ STUDENT_POSTCODE = "ST: Term PC"
 def _read_data(
     subject: str, postcodes: str
 ) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    """_summary_
+    """Reads in the initial school, the matches from `spopt` and the
+    UK database on postcodes and prepare the data for processing.
+
+    Args:
+        subject: The name of the subject.
+        postcodes: The name of the postcode data.
 
     Returns:
-        tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]: _description_
+        The three prepared dataframes.
     """
     # prepare whole school data
     schools = pd.read_csv(
@@ -43,10 +48,16 @@ def _read_data(
     return schools, matches, postcodes
 
 
-def _prepare_data(
-    subject: str, postcodes: str
-) -> pd.DataFrame:
-    """
+def _prepare_data(subject: str, postcodes: str) -> pd.DataFrame:
+    """Merges the three dataframes to make a singular dataframe with
+    student/school ID and the lat lon coordinates.
+
+    Args:
+        subject: The name of the subject.
+        postcodes: The name of the postcode data.
+
+    Returns:
+        The prepared dataframe of coordinates.
     """
     # read in data
     schools, matches, postcodes = _read_data(subject, postcodes)
@@ -75,7 +86,7 @@ def main(*, subject: str, postcodes: str) -> None:
     Args:
         filename (str): _description_
     """
-    df = _prepare_data(subject, postcodes)
+    _prepare_data(subject, postcodes)
     print()
 
 
