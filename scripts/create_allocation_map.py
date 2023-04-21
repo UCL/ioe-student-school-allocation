@@ -141,10 +141,9 @@ def _prepare_plot(subject: str, df: pd.DataFrame) -> None:
     # prepare final output
     fig.update_layout(mapbox_style="open-street-map")
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-    fig.write_html(
-        _file_location.parent / f"matched_student_school_pairs_{subject}.html"
-    )
-    fig.show()
+    filename = f"matched_student_school_pairs_{subject}"
+    fig.write_html(_file_location.parent / f"{filename}.html")
+    fig.show(config={"toImageButtonOptions": {"filename": filename}})
 
 
 def main(*, subject: str, postcodes: str) -> None:
