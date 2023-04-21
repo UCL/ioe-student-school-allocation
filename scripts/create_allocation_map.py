@@ -81,16 +81,38 @@ def _prepare_data(
     ).drop(columns=[DATA_POSTCODE, STUDENT_POSTCODE])
 
 
+def _prepare_connecting_lines(df: pd.DataFrame) -> pd.DataFrame:
+    """_summary_
+
+    Args:
+        df (pd.DataFrame): _description_
+
+    Returns:
+        pd.DataFrame: _description_
+    """
+    return pd.DataFrame(
+        {
+            "ID": df[["SE2 PP: Code", "ST: ID"]].values.reshape(-1),
+            "latitude": df[["latitude_school", "latitude_student"]].values.reshape(-1),
+            "longitude": df[["longitude_school", "longitude_student"]].values.reshape(
+                -1
+            ),
+        }
+    )
+
+
 def _prepare_plot(df: pd.DataFrame) -> None:
     """Creates the plot of points on a map.
 
     Args:
         df: The prepared datafame.
     """
-    fig_schools = px.scatter_mapbox(
+    # plot all schools
+    fig = px.scatter_mapbox(
         df,
         lat="latitude_school",
         lon="longitude_school",
+        hover_data=SCHOOL_ID,
         labels={
             SCHOOL_ID: "School ID",
             "latitude_school": "Latitude School",
@@ -98,10 +120,12 @@ def _prepare_plot(df: pd.DataFrame) -> None:
         },
         color_discrete_sequence=["red"],
     )
-    fig_students = px.scatter_mapbox(
+    # plot all students
+    students = px.scatter_mapbox(
         df,
         lat="latitude_student",
         lon="longitude_student",
+        hover_data=STUDENT_ID,
         labels={
             STUDENT_ID: "Student ID",
             "latitude_student": "Latitude Student",
@@ -109,11 +133,23 @@ def _prepare_plot(df: pd.DataFrame) -> None:
         },
         color_discrete_sequence=["blue"],
     )
-    fig_schools.add_trace(fig_students.data[0])
+    fig.add_trace(students.data[0])
 
-    fig_schools.update_layout(mapbox_style="open-street-map")
-    fig_schools.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-    fig_schools.show()
+    # connect the student-school pairs
+    # df_combined_lat_lon = _prepare_connecting_lines(df.dropna())
+    # for i in range(len(df_combined_lat_lon) // 2):
+    #     connection = px.line_mapbox(
+    #         df_combined_lat_lon.loc[i:i+1],
+    #         lat="latitude",
+    #         lon="longitude",
+    #         color_discrete_sequence=["black"]
+    #     )
+    #     fig.add_traces(connection.data)
+
+    # prepare final output
+    fig.update_layout(mapbox_style="open-street-map")
+    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    fig.show()
 
 
 def main(*, subject: str, postcodes: str) -> None:
