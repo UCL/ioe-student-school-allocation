@@ -11,3 +11,4 @@ _version.py
 dist
 !example_subject_schools.csv
 !example_subject_students.csv
+.ipynb_checkpoints/reproducible-example-checkpoint.ipynb
