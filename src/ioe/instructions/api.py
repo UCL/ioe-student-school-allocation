@@ -27,6 +27,8 @@ def get_request_response(
     Perform GET request and access the response
     """
     connection_string = create_connection_string(
-        student[COLUMN_STUDENT_POSTCODE], school[1], mode=student[COLUMN_TRAVEL]
+        student[COLUMN_STUDENT_POSTCODE],
+        school[1],
+        mode=student[COLUMN_TRAVEL],
     )
     return session.get(connection_string)

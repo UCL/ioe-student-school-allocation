@@ -1,4 +1,4 @@
-from ioe.utils.constants import TFL_API_PREFIX, TFL_APP_KEY
+from ioe.utils.constants import COLUMN_TRAVEL, TFL_API_PREFIX, TFL_APP_KEY
 from ioe.utils.logger import logging
 
 
@@ -61,7 +61,7 @@ def _handle_transport_modes(transport_mode: str) -> tuple[str, str]:
     return mode, cycle_preference
 
 
-def create_connection_string(  # noqa: PLR0913
+def _create_connection_string_tfl(  # noqa: PLR0913
     student: str,
     school: str,
     *,
@@ -110,9 +110,32 @@ def create_connection_string(  # noqa: PLR0913
     optional_queries = "".join(
         f"&{k}={v}" for (k, v) in inputs.items() if v != ""  # noqa: PLC1901
     )
-    url = (
+    return (
         f"{TFL_API_PREFIX}/{student}/to/{school}"
         f"?app_key={TFL_APP_KEY}{optional_queries}"
+    )
+
+
+def _create_connection_string_openrouteservice(
+    student: str,
+    school: str,
+) -> str:
+    """ """
+    pass
+
+
+def create_connection_string(
+    student: str,
+    school: str,
+) -> str:
+    """
+    Creates the API request URL for the appropriate mode-based domain.
+    """
+    mode = student[COLUMN_TRAVEL]
+    url = (
+        _create_connection_string_openrouteservice(student, school)
+        if mode == "C"
+        else _create_connection_string_tfl(student, school, mode=mode)
     )
     logging.debug(url)
     return url
