@@ -61,7 +61,7 @@ def _handle_transport_modes(transport_mode: str) -> tuple[str, str]:
     return mode, cycle_preference
 
 
-def create_connection_string(
+def create_connection_string(  # noqa: PLR0913
     student: str,
     school: str,
     *,
