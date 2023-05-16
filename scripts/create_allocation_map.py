@@ -5,15 +5,17 @@ import pandas as pd
 import pgeocode
 import plotly.express as px
 
-LATITUDE = "latitude"
-LONGITUDE = "longitude"
+LATITUDE_COL = "latitude"
+LONGITUDE_COL = "longitude"
 MATCHES_SCHOOL_ID = "allocation_school_id"
 SCHOOL_ID = "SE2 PP: Code"
+SCHOOL_LATITUDE = "latitude_school"
+SCHOOL_LONGITUDE = "longitude_school"
 SCHOOL_POSTCODE = "SE2 PP: PC"
-SCHOOL_SUFFIX = "_school"
 STUDENT_ID = "ST: ID"
+STUDENT_LATITUDE = "latitude_student"
+STUDENT_LONGITUDE = "longitude_student"
 STUDENT_POSTCODE = "ST: Term PC"
-STUDENT_SUFFIX = "_student"
 
 _file_location = Path(__file__).resolve()
 _nomi = pgeocode.Nominatim("GB_full")
@@ -78,15 +80,15 @@ def _prepare_data(
     )
     # merge the result with the UK database to get school lat lon coords
     matches_merge_students[
-        [f"{LATITUDE}{SCHOOL_SUFFIX}", f"{LONGITUDE}{SCHOOL_SUFFIX}"]
+        [SCHOOL_LATITUDE, SCHOOL_LONGITUDE]
     ] = _nomi.query_postal_code(matches_merge_students[SCHOOL_POSTCODE].values)[
-        [LATITUDE, LONGITUDE]
+        [LATITUDE_COL, LONGITUDE_COL]
     ]
     # merge the result with the UK database to get student lat lon coords
     matches_merge_students[
-        [f"{LATITUDE}{STUDENT_SUFFIX}", f"{LONGITUDE}{STUDENT_SUFFIX}"]
+        [STUDENT_LATITUDE, STUDENT_LONGITUDE]
     ] = _nomi.query_postal_code(matches_merge_students[STUDENT_POSTCODE].values)[
-        [LATITUDE, LONGITUDE]
+        [LATITUDE_COL, LONGITUDE_COL]
     ]
     # remove unrequired columns
     return matches_merge_students.drop(columns=[SCHOOL_POSTCODE, STUDENT_POSTCODE])
@@ -104,12 +106,8 @@ def _prepare_connecting_lines(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(
         {
             "ID": df[[SCHOOL_ID, STUDENT_ID]].values.reshape(-1),
-            LATITUDE: df[
-                [f"{LATITUDE}{SCHOOL_SUFFIX}", f"{LATITUDE}{STUDENT_SUFFIX}"]
-            ].values.reshape(-1),
-            LONGITUDE: df[
-                [f"{LONGITUDE}{SCHOOL_SUFFIX}", f"{LONGITUDE}{STUDENT_SUFFIX}"]
-            ].values.reshape(-1),
+            LATITUDE_COL: df[[SCHOOL_LATITUDE, STUDENT_LATITUDE]].values.reshape(-1),
+            LONGITUDE_COL: df[[SCHOOL_LONGITUDE, STUDENT_LONGITUDE]].values.reshape(-1),
         }
     )
 
@@ -124,15 +122,15 @@ def _prepare_plot(subject: str, df: pd.DataFrame) -> None:
     # plot all schools
     fig = px.scatter_mapbox(
         df,
-        lat=f"{LATITUDE}{SCHOOL_SUFFIX}",
-        lon=f"{LONGITUDE}{SCHOOL_SUFFIX}",
+        lat=SCHOOL_LATITUDE,
+        lon=SCHOOL_LONGITUDE,
         color_discrete_sequence=["red"],
     )
     # plot all students
     students = px.scatter_mapbox(
         df,
-        lat=f"{LATITUDE}{STUDENT_SUFFIX}",
-        lon=f"{LONGITUDE}{STUDENT_SUFFIX}",
+        lat=STUDENT_LATITUDE,
+        lon=STUDENT_LONGITUDE,
         color_discrete_sequence=["blue"],
     )
     fig.add_trace(students.data[0])
@@ -142,8 +140,8 @@ def _prepare_plot(subject: str, df: pd.DataFrame) -> None:
     for i in range(0, len(df_combined_lat_lon), 2):
         connection = px.line_mapbox(
             df_combined_lat_lon.loc[i : i + 1],
-            lat=LATITUDE,
-            lon=LONGITUDE,
+            lat=LATITUDE_COL,
+            lon=LONGITUDE_COL,
             color_discrete_sequence=["black"],
         )
         fig.add_trace(connection.data[0])
