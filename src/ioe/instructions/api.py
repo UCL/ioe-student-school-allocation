@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 from ioe.constants import (
-    COLUMN_STUDENT_POSTCODE,
+    COLUMN_LATITUDE,
+    COLUMN_LONGITUDE,
     COLUMN_TRAVEL,
     MAX_REQUESTS_PER_MINUTE,
     TFL_API_PREFIX,
@@ -26,7 +27,9 @@ def get_request_response(
     """
     Perform GET request and access the response
     """
+    student_coord = ",".join(student[[COLUMN_LATITUDE, COLUMN_LONGITUDE]].astype(str))
+    school_coord = ",".join(school[-2:].astype(str))
     connection_string = create_connection_string(
-        student[COLUMN_STUDENT_POSTCODE], school[1], mode=student[COLUMN_TRAVEL]
+        student_coord, school_coord, mode=student[COLUMN_TRAVEL]
     )
     return session.get(connection_string)
