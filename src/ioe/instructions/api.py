@@ -1,12 +1,12 @@
 import numpy as np
 import pandas as pd
-from ioe.instructions.connection import create_connection_string
-from ioe.utils.constants import (
+from ioe.constants import (
     COLUMN_STUDENT_POSTCODE,
     COLUMN_TRAVEL,
     MAX_REQUESTS_PER_MINUTE,
     TFL_API_PREFIX,
 )
+from ioe.instructions.connection import create_connection_string
 from numpy import typing as npt
 from pyrate_limiter import FileLockSQLiteBucket
 from requests import Response, Session

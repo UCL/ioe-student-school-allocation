@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import pandas as pd
-from ioe.utils.logger import logging
+from ioe.logger import logging
 
 
 def save_output_journeys(

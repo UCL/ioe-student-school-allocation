@@ -1,5 +1,5 @@
-from ioe.utils.constants import TFL_API_PREFIX, TFL_APP_KEY
-from ioe.utils.logger import logging
+from ioe.constants import TFL_API_PREFIX, TFL_APP_KEY
+from ioe.logger import logging
 
 
 def _handle_transport_modes(transport_mode: str) -> tuple[str, str]:

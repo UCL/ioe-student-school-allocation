@@ -1,10 +1,10 @@
 from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
+from ioe.constants import N_CORES
 from ioe.data.data_input import read_data
 from ioe.data.data_output import save_output_failures, save_output_journeys
 from ioe.main import compute_all_pairs_journeys
-from ioe.utils.constants import N_CORES
 
 
 def _read_args() -> Namespace:

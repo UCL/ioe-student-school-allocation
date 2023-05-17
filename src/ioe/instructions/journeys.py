@@ -1,9 +1,9 @@
 import numpy as np
 import pandas as pd
 import requests
+from ioe.constants import COLUMN_STUDENT_ID, COLUMN_TRAVEL
 from ioe.instructions.api import get_request_response
-from ioe.utils.constants import COLUMN_STUDENT_ID, COLUMN_TRAVEL
-from ioe.utils.logger import logging
+from ioe.logger import logging
 from numpy import typing as npt
 from requests import Response
 

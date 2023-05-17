@@ -2,7 +2,7 @@ from concurrent.futures import ProcessPoolExecutor
 
 import pandas as pd
 from ioe.instructions.journeys import process_individual_student
-from ioe.utils.logger import logging
+from ioe.logger import logging
 
 
 def compute_all_pairs_journeys(
