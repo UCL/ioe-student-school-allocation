@@ -2,8 +2,11 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 import pandas as pd
+import pgeocode
 
 COLUMN_COUNT = "Count"
+COLUMN_LATITUDE = "latitude"
+COLUMN_LONGITUDE = "longitude"
 COLUMN_PLACEMENT_STATUS = "PL: Status"
 COLUMN_SCHOOL_ID = "SE2 PP: Code"
 COLUMN_SCHOOL_POSTCODE = "SE2 PP: PC"
@@ -18,20 +21,39 @@ VALUE_NOT_APPLICABLE = "not applicable"
 VALUE_NOT_KNOWN = "not known"
 
 SCHOOL_COLUMNS = [
-    COLUMN_SCHOOL_ID,
-    COLUMN_SCHOOL_POSTCODE,
-    COLUMN_SUBJECT,
     COLUMN_COUNT,
+    COLUMN_LATITUDE,
+    COLUMN_LONGITUDE,
+    COLUMN_SCHOOL_ID,
+    COLUMN_SUBJECT,
 ]
 STUDENT_COLUMNS = [
+    COLUMN_LATITUDE,
+    COLUMN_LONGITUDE,
     COLUMN_STUDENT_ID,
-    COLUMN_STUDENT_POSTCODE,
     COLUMN_STUDENT_PRIORITY,
     COLUMN_SUBJECT,
     COLUMN_TRAVEL,
 ]
 
 _data_location = Path(__file__).resolve().parent
+_nomi = pgeocode.Nominatim("GB_full")
+
+
+def _convert_postcode_to_lat_lon(
+    df: pd.DataFrame, postcode_column: str
+) -> pd.DataFrame:
+    """Converts a list of GB postcodes to latitude longitude coordinates
+
+    Args:
+        df: Input dataframe which includes postcode column
+        postcodes: A list of full GB postcodes
+
+    Returns:
+        A dataframe containing all the latitude and longitude
+    """
+    postcodes = df[postcode_column].values
+    return _nomi.query_postal_code(postcodes)[[COLUMN_LATITUDE, COLUMN_LONGITUDE]]
 
 
 def _prepare_school_priority_column(df: pd.DataFrame, column: str) -> pd.DataFrame:
@@ -83,6 +105,10 @@ def _parepare_school_data(df: pd.DataFrame, subject: str) -> None:
     )
     # remove descriptions from priority column
     df = _prepare_school_priority_column(df, school_priority)
+    # convert postcodes to lat lon
+    df[[COLUMN_LATITUDE, COLUMN_LONGITUDE]] = _convert_postcode_to_lat_lon(
+        df, COLUMN_SCHOOL_POSTCODE
+    )
     # split by sub-subject
     for sub_subject, sub_data in df.groupby(df[COLUMN_SUBJECT]):
         df = _count_duplicate_schools(sub_data)
@@ -107,6 +133,10 @@ def _parepare_student_data(df: pd.DataFrame) -> None:
     # create a travel mode column for API
     df[[COLUMN_STUDENT_PRIORITY, COLUMN_TRAVEL]] = df[COLUMN_STUDENT_PRIORITY].apply(
         lambda x: pd.Series(list(x))
+    )
+    # convert postcodes to lat lon
+    df[[COLUMN_LATITUDE, COLUMN_LONGITUDE]] = _convert_postcode_to_lat_lon(
+        df, COLUMN_STUDENT_POSTCODE
     )
     # split by sub-subject
     for sub_subject, sub_data in df.groupby(df[COLUMN_SUBJECT]):
