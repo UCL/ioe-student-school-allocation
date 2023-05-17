@@ -1,7 +1,9 @@
+import logging
 from pathlib import Path
 
 import pandas as pd
-from ioe.logger import logging
+
+_logger = logging.getLogger(__name__)
 
 
 def save_output_journeys(
@@ -14,7 +16,7 @@ def save_output_journeys(
     df = df.convert_dtypes()
     df.sort_values(by=["student", "school"], ignore_index=True, inplace=True)
     if save_output:
-        logging.info("Saving journey output to files")
+        _logger.info("Saving journey output to files")
         df.to_csv(filepath, index=False)
     return df
 
@@ -31,6 +33,6 @@ def save_output_failures(
     df["reason"] = df["reason"].astype("category")
     df.sort_values(by=["student", "school", "code"], ignore_index=True, inplace=True)
     if save_output:
-        logging.info("Saving failure output to file")
+        _logger.info("Saving failure output to file")
         df.to_csv(filepath, index=False)
     return df

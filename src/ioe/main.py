@@ -1,8 +1,11 @@
+import logging
 from concurrent.futures import ProcessPoolExecutor
 
 import pandas as pd
+
 from ioe.instructions.journeys import process_individual_student
-from ioe.logger import logging
+
+_logger = logging.getLogger(__name__)
 
 
 def compute_all_pairs_journeys(
@@ -15,7 +18,7 @@ def compute_all_pairs_journeys(
     """
     Loop through all students and school to find the min journey time for each
     """
-    logging.info(f"Start process with {n_cores} cores for subject {subject}")
+    _logger.info(f"Start process with {n_cores} cores for subject {subject}")
     args = [(subject, students, school) for school in schools.values]
     with ProcessPoolExecutor(max_workers=n_cores) as e:
         futures = e.map(process_individual_student, args)

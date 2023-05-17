@@ -1,11 +1,14 @@
+import logging
+
 import numpy as np
 import pandas as pd
 import requests
 from ioe.constants import COLUMN_STUDENT_ID, COLUMN_TRAVEL
 from ioe.instructions.api import get_request_response
-from ioe.logger import logging
 from numpy import typing as npt
 from requests import Response
+
+_logger = logging.getLogger(__name__)
 
 
 def _create_journey_instructions(journey: dict) -> tuple[int, str]:
@@ -16,7 +19,7 @@ def _create_journey_instructions(journey: dict) -> tuple[int, str]:
     legs = journey["legs"]
     message = f"{legs[0]['instruction']['summary']}"
     message += "".join(f" THEN {leg['instruction']['summary']}" for leg in legs[1:])
-    logging.debug(message)
+    _logger.debug(message)
     return duration, message
 
 
@@ -31,7 +34,7 @@ def _create_journey(
     """
     # find the number of journeys
     found_journeys = data["journeys"]
-    logging.info(
+    _logger.info(
         f"Number of valid journeys found: {len(found_journeys)} for student: "
         f"{student[COLUMN_STUDENT_ID]} -> school: {school[0]}, subject {subject}"
     )
@@ -55,7 +58,7 @@ def _create_failure(
     """
     code = response.status_code
     reason = response.reason
-    logging.error(
+    _logger.error(
         f"Status code: {code} for student: {student[COLUMN_STUDENT_ID]} "
         f"-> school: {school[0]}, subject: {subject}"
     )
@@ -81,7 +84,7 @@ def process_individual_student(
     journeys: list[tuple[str, str, int, str]] = []
     failures: list[tuple[str, str, str, int, str]] = []
 
-    logging.info(f"New school: {school[0]}, subject {subject}")
+    _logger.info(f"New school: {school[0]}, subject {subject}")
     for _, student in students.iterrows():
         response = get_request_response(
             student,

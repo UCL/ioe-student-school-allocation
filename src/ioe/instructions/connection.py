@@ -1,5 +1,8 @@
+import logging
+
 from ioe.constants import TFL_API_PREFIX, TFL_APP_KEY
-from ioe.logger import logging
+
+_logger = logging.getLogger(__name__)
 
 
 def _handle_transport_modes(transport_mode: str) -> tuple[str, str]:
@@ -61,7 +64,7 @@ def _handle_transport_modes(transport_mode: str) -> tuple[str, str]:
     return mode, cycle_preference
 
 
-def create_connection_string(
+def create_connection_string(  # noqa: PLR0913
     student: str,
     school: str,
     *,
@@ -114,5 +117,5 @@ def create_connection_string(
         f"{TFL_API_PREFIX}/{student}/to/{school}"
         f"?app_key={TFL_APP_KEY}{optional_queries}"
     )
-    logging.debug(url)
+    _logger.debug(url)
     return url
