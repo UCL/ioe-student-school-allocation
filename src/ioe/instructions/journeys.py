@@ -1,11 +1,9 @@
 import logging
 
-import numpy as np
 import pandas as pd
 import requests
-from ioe.constants import COLUMN_STUDENT_ID, COLUMN_TRAVEL
+from ioe.constants import COLUMN_SCHOOL_ID, COLUMN_STUDENT_ID, COLUMN_TRAVEL
 from ioe.instructions.api import get_request_response
-from numpy import typing as npt
 from requests import Response
 
 _logger = logging.getLogger(__name__)
@@ -26,7 +24,7 @@ def _create_journey_instructions(journey: dict) -> tuple[int, str]:
 def _create_journey(
     subject: str,
     student: pd.Series,
-    school: npt.NDArray[np.str_ | np.int_],
+    school: dict,
     data: dict,
 ) -> tuple[str, str, int, str]:
     """
@@ -36,7 +34,8 @@ def _create_journey(
     found_journeys = data["journeys"]
     _logger.info(
         f"Number of valid journeys found: {len(found_journeys)} for student: "
-        f"{student[COLUMN_STUDENT_ID]} -> school: {school[0]}, subject {subject}"
+        f"{student[COLUMN_STUDENT_ID]} -> school: {school[COLUMN_SCHOOL_ID]}, "
+        f"subject {subject}"
     )
 
     # shortest journey
@@ -44,13 +43,13 @@ def _create_journey(
     duration, message = _create_journey_instructions(shortest_journey)
 
     # prepare the final output
-    return student[COLUMN_STUDENT_ID], school[0], duration, message
+    return student[COLUMN_STUDENT_ID], school[COLUMN_SCHOOL_ID], duration, message
 
 
 def _create_failure(
     subject: str,
     student: pd.Series,
-    school: npt.NDArray[np.str_ | np.int_],
+    school: dict,
     response: Response,
 ) -> tuple[str, str, str, int, str]:
     """
@@ -60,11 +59,11 @@ def _create_failure(
     reason = response.reason
     _logger.error(
         f"Status code: {code} for student: {student[COLUMN_STUDENT_ID]} "
-        f"-> school: {school[0]}, subject: {subject}"
+        f"-> school: {school[COLUMN_SCHOOL_ID]}, subject: {subject}"
     )
     return (
         student[COLUMN_STUDENT_ID],
-        school[0],
+        school[COLUMN_SCHOOL_ID],
         student[COLUMN_TRAVEL],
         code,
         reason,
@@ -72,7 +71,7 @@ def _create_failure(
 
 
 def process_individual_student(
-    args: tuple[str, pd.DataFrame, npt.NDArray[np.str_ | np.int_]]
+    args: tuple[str, pd.DataFrame, dict[str, str | int]]
 ) -> tuple[list[tuple[str, str, int, str]], list[tuple[str, str, str, int, str]]]:
     """
     method to be executed by each process filling the same dictionary
@@ -84,7 +83,7 @@ def process_individual_student(
     journeys: list[tuple[str, str, int, str]] = []
     failures: list[tuple[str, str, str, int, str]] = []
 
-    _logger.info(f"New school: {school[0]}, subject {subject}")
+    _logger.info(f"New school: {school[COLUMN_SCHOOL_ID]}, subject {subject}")
     for _, student in students.iterrows():
         response = get_request_response(
             student,

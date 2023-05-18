@@ -19,7 +19,7 @@ def compute_all_pairs_journeys(
     Loop through all students and school to find the min journey time for each
     """
     _logger.info(f"Start process with {n_cores} cores for subject {subject}")
-    args = [(subject, students, school) for school in schools.values]
+    args = [(subject, students, school) for school in schools.to_dict("records")]
     with ProcessPoolExecutor(max_workers=n_cores) as e:
         futures = e.map(process_individual_student, args)
 

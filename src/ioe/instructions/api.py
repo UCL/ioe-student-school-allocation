@@ -28,7 +28,9 @@ def get_request_response(
     Perform GET request and access the response
     """
     student_coord = ",".join(student[[COLUMN_LATITUDE, COLUMN_LONGITUDE]].astype(str))
-    school_coord = ",".join(school[-2:].astype(str))
+    school_coord = ",".join(
+        [f"{school[s]}" for s in [COLUMN_LATITUDE, COLUMN_LONGITUDE]]
+    )
     connection_string = create_connection_string(
         student_coord, school_coord, mode=student[COLUMN_TRAVEL]
     )
