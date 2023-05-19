@@ -3,6 +3,7 @@ import pandas as pd
 from ioe.constants import (
     COLUMN_LATITUDE,
     COLUMN_LONGITUDE,
+    COLUMN_TRAVEL,
     MAX_REQUESTS_PER_MINUTE,
     TFL_API_PREFIX,
 )
@@ -26,9 +27,11 @@ def get_request_response(
     """
     Perform GET request and access the response
     """
-    student_coord = ",".join(student[[COLUMN_LATITUDE, COLUMN_LONGITUDE]].astype(str))
-    school_coord = ",".join(
-        [f"{school[s]}" for s in [COLUMN_LATITUDE, COLUMN_LONGITUDE]]
+    connection_string = create_connection_string(
+        student[COLUMN_LATITUDE],
+        student[COLUMN_LONGITUDE],
+        school[COLUMN_LATITUDE],
+        school[COLUMN_LONGITUDE],
+        student[COLUMN_TRAVEL],
     )
-    connection_string = create_connection_string(student_coord, school_coord)
     return session.get(connection_string)

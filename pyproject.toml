@@ -19,6 +19,7 @@ classifiers = [
 dependencies = [
     "filelock>=3.12.0",
     "openpyxl>=3.1.2",
+    "openrouteservice==2.3.3",
     "pandas>=2.0.1",
     "pgeocode@git+https://github.com/symerio/pgeocode.git@d5f89074ea73b392e0a21b275dbc002397c4b63c",
     "plotly>=5.14.1",
