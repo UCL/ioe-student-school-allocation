@@ -1,11 +1,11 @@
-ST: ID,ST: Term PC,ST: Allocation Priority,PL: Subject,Travel
-00000002,NE259ST,3,Mathematics,P
-00000004,B83EP,1,Mathematics,P
-00000007,EC2A4LT,1,Mathematics,B
-00000009,PE389UE,1,Mathematics,P
-00000013,KT229HD,3,Mathematics,P
-00000014,PL51TE,1,Mathematics,P
-00000022,HP202SF,2,Mathematics,P
-00000025,RH37HH,3,Mathematics,P
-00000035,L64DH,3,Mathematics,P
-00000041,HX39QH,2,Mathematics,P
+ST: ID,latitude,longitude,PL: Subject,Travel,ST: Allocation Priority
+2,55.0383,-1.4725,Mathematics,P,3
+4,52.4858,-1.8327,Mathematics,P,1
+7,51.5244,-0.0846,Mathematics,B,1
+9,52.6098,0.391,Mathematics,P,1
+13,51.2887,-0.3523,Mathematics,P,3
+14,50.4019,-4.1857,Mathematics,P,1
+22,51.8167,-0.8196,Mathematics,P,2
+25,51.2234,-0.2714,Mathematics,P,3
+35,53.4265,-2.9381,Mathematics,P,3
+41,53.7123,-1.8364,Mathematics,P,2

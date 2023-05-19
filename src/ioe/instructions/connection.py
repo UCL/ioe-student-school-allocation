@@ -1,5 +1,8 @@
-from ioe.utils.constants import COLUMN_TRAVEL, TFL_API_PREFIX, TFL_APP_KEY
-from ioe.utils.logger import logging
+import logging
+
+from ioe.constants import COLUMN_TRAVEL, TFL_API_PREFIX, TFL_APP_KEY
+
+_logger = logging.getLogger(__name__)
 
 
 def _handle_transport_modes(transport_mode: str) -> tuple[str, str]:
@@ -121,7 +124,7 @@ def _create_connection_string_openrouteservice(
     school: str,
 ) -> str:
     """ """
-    pass
+    return ""
 
 
 def create_connection_string(
@@ -137,5 +140,5 @@ def create_connection_string(
         if mode == "C"
         else _create_connection_string_tfl(student, school, mode=mode)
     )
-    logging.debug(url)
+    _logger.debug(url)
     return url
