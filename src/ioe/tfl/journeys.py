@@ -3,6 +3,7 @@ import logging
 import pandas as pd
 import requests
 from ioe.constants import COLUMN_SCHOOL_ID, COLUMN_STUDENT_ID, COLUMN_TRAVEL
+from ioe.ors.driving import calculate_driving_time
 from ioe.tfl.api import get_request_response
 from requests import Response
 
@@ -85,15 +86,16 @@ def process_individual_student(
 
     _logger.info(f"New school: {school[COLUMN_SCHOOL_ID]}, subject {subject}")
     for _, student in students.iterrows():
-        response = get_request_response(
-            student,
-            school,
-        )
-        if (response.status_code == requests.codes.ok) and (
-            student[COLUMN_TRAVEL] != "C"  # TODO: fix car travel
-        ):
-            data = response.json()
-            journeys.append(_create_journey(subject, student, school, data))
+        if student[COLUMN_TRAVEL] == "C":
+            data = calculate_driving_time(student, school)
         else:
-            failures.append(_create_failure(subject, student, school, response))
+            response = get_request_response(
+                student,
+                school,
+            )
+            if response.status_code == requests.codes.ok:
+                data = response.json()
+                journeys.append(_create_journey(subject, student, school, data))
+            else:
+                failures.append(_create_failure(subject, student, school, response))
     return journeys, failures
