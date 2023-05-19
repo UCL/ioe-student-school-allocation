@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 import requests
 from ioe.constants import COLUMN_SCHOOL_ID, COLUMN_STUDENT_ID, COLUMN_TRAVEL
-from ioe.instructions.api import get_request_response
+from ioe.tfl.api import get_request_response
 from requests import Response
 
 _logger = logging.getLogger(__name__)

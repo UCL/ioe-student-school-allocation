@@ -3,7 +3,7 @@ from concurrent.futures import ProcessPoolExecutor
 
 import pandas as pd
 
-from ioe.instructions.journeys import process_individual_student
+from ioe.tfl.journeys import process_individual_student
 
 _logger = logging.getLogger(__name__)
 

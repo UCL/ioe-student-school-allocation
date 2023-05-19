@@ -51,10 +51,6 @@ optional-dependencies.dev = [
 scripts.tfl = "ioe.scripts.tfl:main"
 urls.homepage = "https://github.com/UCL/ioe-student-school-allocation"
 
-[tool.mypy]
-explicit_package_bases = true
-plugins = "numpy.typing.mypy_plugin"
-
 [tool.ruff]
 fix = true
 force-exclude = true

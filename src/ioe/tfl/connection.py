@@ -1,9 +1,7 @@
 import logging
 
-import openrouteservice
-from ioe.constants import MINUTES, OPENROUTESERVICE_API_KEY, TFL_API_PREFIX, TFL_APP_KEY
+from ioe.constants import TFL_API_PREFIX, TFL_APP_KEY
 
-_client = openrouteservice.Client(key=OPENROUTESERVICE_API_KEY)
 _logger = logging.getLogger(__name__)
 
 
@@ -66,7 +64,7 @@ def _handle_transport_modes(transport_mode: str) -> tuple[str, str]:
     return mode, cycle_preference
 
 
-def _create_connection_string_tfl(  # noqa: PLR0913
+def create_connection_string(  # noqa: PLR0913
     student: str,
     school: str,
     *,
@@ -115,50 +113,9 @@ def _create_connection_string_tfl(  # noqa: PLR0913
     optional_queries = "".join(
         f"&{k}={v}" for (k, v) in inputs.items() if v != ""  # noqa: PLC1901
     )
-    return (
+    url = (
         f"{TFL_API_PREFIX}/{student}/to/{school}"
         f"?app_key={TFL_APP_KEY}{optional_queries}"
-    )
-
-
-def _create_connection_string_openrouteservice(
-    student: tuple[int, int],
-    school: tuple[int, int],
-) -> int:
-    """Calls the openrouteservice SDK and finds the minimum driving duration
-
-    Args:
-        student: (student_longitude, student_latitude)
-        school: (school_longitude, school_latitude)
-
-    Returns:
-        The minimum driving duration in minutes for the student school pair
-    """
-    routes = _client.directions((student, school), profile="driving-car")
-    shortest_journey = min(routes["routes"], key=lambda r: r["summary"]["duration"])
-    return shortest_journey["summary"]["duration"] / MINUTES
-
-
-def create_connection_string(
-    student_lat: int,
-    student_lon: int,
-    school_lat: int,
-    school_lon: int,
-    transport_mode: str,
-) -> str:
-    """
-    Creates the API request URL for the appropriate mode-based domain.
-    """
-    url = (
-        _create_connection_string_openrouteservice(
-            (student_lon, student_lat), (school_lon, school_lat)
-        )
-        if transport_mode == "C"
-        else _create_connection_string_tfl(
-            ",".join([f"{st}" for st in (student_lat, student_lon)]),
-            ",".join([f"{st}" for st in (school_lat, school_lon)]),
-            mode=transport_mode,
-        )
     )
     _logger.debug(url)
     return url
