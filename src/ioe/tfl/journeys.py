@@ -22,7 +22,7 @@ def _create_journey_instructions(
         message = f"{legs[0]['instruction']['summary']}"
         message += "".join(f" THEN {leg['instruction']['summary']}" for leg in legs[1:])
     else:
-        message = "cycle"
+        message = "Cycle"
     _logger.debug(message)
     return duration, message
 
