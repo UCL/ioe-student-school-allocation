@@ -21,8 +21,8 @@ def _create_journey_instructions(journey: dict) -> tuple[int, str]:
     """
     Find the duration and create the message for a single journey
     """
-    duration_mins = round(journey["summary"]["duration"]) / MINUTES
-    return duration_mins, ""
+    duration_mins = round(journey["summary"]["duration"] / MINUTES)
+    return duration_mins, "drive"
 
 
 def _calculate_driving_times(student: pd.Series, school: dict[str, str | int]) -> dict:

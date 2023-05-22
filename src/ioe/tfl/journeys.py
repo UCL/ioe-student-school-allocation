@@ -4,20 +4,25 @@ import pandas as pd
 import requests
 from requests import Response
 
-from ioe.constants import COLUMN_SCHOOL_ID, COLUMN_STUDENT_ID
+from ioe.constants import COLUMN_SCHOOL_ID, COLUMN_STUDENT_ID, COLUMN_TRAVEL
 from ioe.tfl.api import get_request_response
 
 _logger = logging.getLogger(__name__)
 
 
-def _create_journey_instructions(journey: dict) -> tuple[int, str]:
+def _create_journey_instructions(
+    journey: dict, *, transport_mode: str
+) -> tuple[int, str]:
     """
     Find the duration and create the message for a single journey
     """
     duration = journey["duration"]
-    legs = journey["legs"]
-    message = f"{legs[0]['instruction']['summary']}"
-    message += "".join(f" THEN {leg['instruction']['summary']}" for leg in legs[1:])
+    if transport_mode == "P":
+        legs = journey["legs"]
+        message = f"{legs[0]['instruction']['summary']}"
+        message += "".join(f" THEN {leg['instruction']['summary']}" for leg in legs[1:])
+    else:
+        message = "cycle"
     _logger.debug(message)
     return duration, message
 
@@ -41,7 +46,9 @@ def _create_journey(
 
     # shortest journey
     shortest_journey = min(found_journeys, key=lambda j: j["duration"])
-    duration, message = _create_journey_instructions(shortest_journey)
+    duration, message = _create_journey_instructions(
+        shortest_journey, transport_mode=student[COLUMN_TRAVEL]
+    )
 
     # prepare the final output
     return student[COLUMN_STUDENT_ID], school[COLUMN_SCHOOL_ID], duration, message
