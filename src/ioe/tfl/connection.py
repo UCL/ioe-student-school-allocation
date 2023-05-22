@@ -18,10 +18,6 @@ def _handle_transport_modes(transport_mode: str) -> tuple[str, str]:
         case "B":
             mode = "cycle"
             cycle_preference = "allTheWay"
-        case "C":
-            # TODO: find correct mode or a different API
-            mode = "private-car"
-            cycle_preference = "none"
         case "P":
             mode = (
                 # "black-cab-as-customer,"
@@ -58,8 +54,8 @@ def _handle_transport_modes(transport_mode: str) -> tuple[str, str]:
             cycle_preference = "none"
         case _:
             raise ValueError(
-                "`transport_mode` must be either `B` (bike), `C` (car) "
-                f"or `P` (public transport) - found `{transport_mode}`"
+                "`transport_mode` must be either `B` (bike), or"
+                f"`P` (public transport) - found `{transport_mode}`"
             )
     return mode, cycle_preference
 
