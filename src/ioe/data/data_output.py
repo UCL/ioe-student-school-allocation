@@ -22,7 +22,7 @@ def save_output_journeys(
 
 
 def save_output_failures(
-    data: list[tuple[str, str, int, str]], filepath: Path, *, save_output: bool
+    data: list[tuple[str, str, str, int, str]], filepath: Path, *, save_output: bool
 ) -> pd.DataFrame:
     """
     Manipulate the failed data into desired CSV format saved as a feather file

@@ -2,10 +2,11 @@ import logging
 
 import pandas as pd
 import requests
+from requests import Response
+
 from ioe.constants import COLUMN_SCHOOL_ID, COLUMN_STUDENT_ID, COLUMN_TRAVEL
 from ioe.ors.driving import calculate_driving_time
 from ioe.tfl.api import get_request_response
-from requests import Response
 
 _logger = logging.getLogger(__name__)
 

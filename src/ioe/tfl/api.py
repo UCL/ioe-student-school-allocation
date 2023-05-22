@@ -1,4 +1,8 @@
 import pandas as pd
+from pyrate_limiter import FileLockSQLiteBucket
+from requests import Response, Session
+from requests_ratelimiter import LimiterAdapter
+
 from ioe.constants import (
     COLUMN_LATITUDE,
     COLUMN_LONGITUDE,
@@ -7,9 +11,6 @@ from ioe.constants import (
     TFL_API_PREFIX,
 )
 from ioe.tfl.connection import create_connection_string
-from pyrate_limiter import FileLockSQLiteBucket
-from requests import Response, Session
-from requests_ratelimiter import LimiterAdapter
 
 session = Session()
 adapter = LimiterAdapter(

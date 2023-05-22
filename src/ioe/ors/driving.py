@@ -1,5 +1,6 @@
 import openrouteservice
 import pandas as pd
+
 from ioe.constants import COLUMN_LATITUDE, COLUMN_LONGITUDE, OPENROUTESERVICE_API_KEY
 
 _client = openrouteservice.Client(key=OPENROUTESERVICE_API_KEY)
@@ -9,8 +10,8 @@ def calculate_driving_time(student: pd.Series, school: dict[str, str | int]) -> 
     """Calls the openrouteservice SDK and finds the minimum driving duration
 
     Args:
-        student: student data
-        school: school data
+        student: an individual student data
+        school: an individual school data
 
     Returns:
         The minimum driving duration in minutes for the student school pair
