@@ -34,9 +34,9 @@ def _create_journey(
     # find the number of journeys
     found_journeys = data["journeys"]
     _logger.info(
-        f"Number of valid journeys found: {len(found_journeys)} for student: "
-        f"{student[COLUMN_STUDENT_ID]} -> school: {school[COLUMN_SCHOOL_ID]}, "
-        f"subject {subject}"
+        f"Number of valid TfL journeys found: {len(found_journeys)} for "
+        f"student: {student[COLUMN_STUDENT_ID]} -> school: "
+        f"{school[COLUMN_SCHOOL_ID]}, subject {subject}"
     )
 
     # shortest journey

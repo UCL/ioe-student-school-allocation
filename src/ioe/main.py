@@ -36,10 +36,9 @@ def _process_individual_student(
             if student[COLUMN_TRAVEL] == "C"
             else create_tfl_routes(subject, student, school)
         )
-        if status_code == requests.codes.OK:
-            journeys.append(route)
-        else:
+        if status_code != requests.codes.OK:
             failures.append(route)
+        journeys.append(route)
     return journeys, failures
 
 

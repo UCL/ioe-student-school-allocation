@@ -9,6 +9,7 @@ from ioe.constants import (
     COLUMN_LONGITUDE,
     COLUMN_SCHOOL_ID,
     COLUMN_STUDENT_ID,
+    MINUTES,
     OPENROUTESERVICE_API_KEY,
 )
 
@@ -20,12 +21,8 @@ def _create_journey_instructions(journey: dict) -> tuple[int, str]:
     """
     Find the duration and create the message for a single journey
     """
-    duration = journey["duration"]
-    legs = journey["legs"]
-    message = f"{legs[0]['instruction']['summary']}"
-    message += "".join(f" THEN {leg['instruction']['summary']}" for leg in legs[1:])
-    _logger.debug(message)
-    return duration, message
+    duration_mins = round(journey["summary"]["duration"]) / MINUTES
+    return duration_mins, ""
 
 
 def _calculate_driving_times(student: pd.Series, school: dict[str, str | int]) -> dict:
