@@ -5,7 +5,7 @@ import requests
 from requests import Response
 
 from ioe.constants import COLUMN_SCHOOL_ID, COLUMN_STUDENT_ID, COLUMN_TRAVEL
-from ioe.ors.driving import calculate_driving_time
+from ioe.ors.driving import calculate_driving_journeys
 from ioe.tfl.api import get_request_response
 
 _logger = logging.getLogger(__name__)
@@ -88,7 +88,7 @@ def process_individual_student(
     _logger.info(f"New school: {school[COLUMN_SCHOOL_ID]}, subject {subject}")
     for _, student in students.iterrows():
         if student[COLUMN_TRAVEL] == "C":
-            data = calculate_driving_time(student, school)
+            data = calculate_driving_journeys(student, school)
         else:
             response = get_request_response(
                 student,

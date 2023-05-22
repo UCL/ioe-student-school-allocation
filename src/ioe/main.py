@@ -3,9 +3,40 @@ from concurrent.futures import ProcessPoolExecutor
 
 import pandas as pd
 
+from ioe.constants import COLUMN_SCHOOL_ID, COLUMN_TRAVEL
 from ioe.tfl.journeys import process_individual_student
 
 _logger = logging.getLogger(__name__)
+
+
+def _process_individual_student(
+    args: tuple[str, pd.DataFrame, dict[str, str | int]]
+) -> tuple[list[tuple[str, str, int, str]], list[tuple[str, str, str, int, str]]]:
+    """Method to be executed by each process filling the same dictionary.
+
+    Args:
+        args: _description_
+
+    Returns:
+        _description_
+    """
+    # so can map in parallel
+    subject, students, school = args
+
+    # initialise internal journeys and failures
+    journeys: list[tuple[str, str, int, str]] = []
+    failures: list[tuple[str, str, str, int, str]] = []
+
+    _logger.info(f"New school: {school[COLUMN_SCHOOL_ID]}, subject {subject}")
+    for _, student in students.iterrows():
+        journey, failure = (
+            create_ors_routes(student, school)
+            if student[COLUMN_TRAVEL] == "C"
+            else create_tfl_routes(student, school)
+        )
+        journeys.append(journey)
+        failures.append(failure)
+    return journeys, failures
 
 
 def compute_all_pairs_journeys(
@@ -15,8 +46,16 @@ def compute_all_pairs_journeys(
     *,
     n_cores: int = 1,
 ) -> tuple[list[tuple[str, str, int, str]], list[tuple[str, str, str, int, str]]]:
-    """
-    Loop through all students and school to find the min journey time for each
+    """Loop through all students and school to find the min journey time for each.
+
+    Args:
+        subject: _description_
+        students: _description_
+        schools: _description_
+        n_cores (optional): _description_. Defaults to 1.
+
+    Returns:
+        _description_
     """
     _logger.info(f"Start process with {n_cores} cores for subject {subject}")
     args = [(subject, students, school) for school in schools.to_dict("records")]
