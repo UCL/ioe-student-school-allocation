@@ -46,7 +46,7 @@ optional-dependencies = {"dev" = [
     "ruff",
 ]}
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 urls = {Code = "https://github.com/UCL/ioe-student-school-allocation", Homepage = "https://github.com/astro-informatics/sleplet", Issues = "https://github.com/UCL/ioe-student-school-allocation/issues"}
 license.file = "LICENCE.md"
 scripts.tfl = "ioe.scripts.tfl:main"
@@ -85,7 +85,7 @@ select = [
     "W",
     "YTT",
 ]
-target-version = "py39"
+target-version = "py310"
 isort.known-first-party = ["ioe"]
 mccabe.max-complexity = 18
 
