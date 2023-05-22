@@ -12,11 +12,11 @@ from ioe.constants import (
 )
 from ioe.tfl.connection import create_connection_string
 
-session = Session()
-adapter = LimiterAdapter(
+_session = Session()
+_adapter = LimiterAdapter(
     per_minute=MAX_REQUESTS_PER_MINUTE, bucket_class=FileLockSQLiteBucket
 )
-session.mount(TFL_API_PREFIX, adapter)
+_session.mount(TFL_API_PREFIX, _adapter)
 
 
 def get_request_response(
@@ -35,4 +35,4 @@ def get_request_response(
         school_coord,
         mode=student[COLUMN_TRAVEL],
     )
-    return session.get(connection_string)
+    return _session.get(connection_string)
