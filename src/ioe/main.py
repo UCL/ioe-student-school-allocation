@@ -2,6 +2,7 @@ import logging
 from concurrent.futures import ProcessPoolExecutor
 
 import pandas as pd
+import requests
 
 from ioe.constants import COLUMN_SCHOOL_ID, COLUMN_TRAVEL
 from ioe.ors.driving import create_ors_routes
@@ -12,7 +13,7 @@ _logger = logging.getLogger(__name__)
 
 def _process_individual_student(
     args: tuple[str, pd.DataFrame, dict[str, str | int]]
-) -> tuple[list[tuple[str, str, int, str]], list[tuple[str, str, int, str]]]:
+) -> tuple[list[tuple[int, str, int, str]], list[tuple[int, str, int, str]]]:
     """Method to be executed by each process filling the same dictionary.
 
     Args:
@@ -25,18 +26,20 @@ def _process_individual_student(
     subject, students, school = args
 
     # initialise internal journeys and failures
-    journeys: list[tuple[str, str, int, str]] = []
-    failures: list[tuple[str, str, int, str]] = []
+    journeys: list[tuple[int, str, int, str]] = []
+    failures: list[tuple[int, str, int, str]] = []
 
     _logger.info(f"New school: {school[COLUMN_SCHOOL_ID]}, subject {subject}")
     for _, student in students.iterrows():
-        journey, failure = (
-            create_ors_routes(student, school)
+        status_code, route = (
+            create_ors_routes(subject, student, school)
             if student[COLUMN_TRAVEL] == "C"
-            else create_tfl_routes(student, school)
+            else create_tfl_routes(subject, student, school)
         )
-        journeys.append(journey)
-        failures.append(failure)
+        if status_code == requests.codes.OK:
+            journeys.append(route)
+        else:
+            failures.append(route)
     return journeys, failures
 
 
@@ -46,7 +49,7 @@ def compute_all_pairs_journeys(
     schools: pd.DataFrame,
     *,
     n_cores: int = 1,
-) -> tuple[list[tuple[str, str, int, str]], list[tuple[str, str, int, str]]]:
+) -> tuple[list[tuple[int, str, int, str]], list[tuple[int, str, int, str]]]:
     """Loop through all students and school to find the min journey time for each.
 
     Args:
@@ -64,8 +67,8 @@ def compute_all_pairs_journeys(
         futures = e.map(_process_individual_student, args)
 
     # collect results from concurrency
-    journeys: list[tuple[str, str, int, str]] = []
-    failures: list[tuple[str, str, int, str]] = []
+    journeys: list[tuple[int, str, int, str]] = []
+    failures: list[tuple[int, str, int, str]] = []
     for journey, failure in futures:
         journeys.extend(journey)
         failures.extend(failure)

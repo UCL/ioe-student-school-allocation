@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 
 
 def save_output_journeys(
-    data: list[tuple[str, str, int, str]], filepath: Path, *, save_output: bool = False
+    data: list[tuple[int, str, int, str]], filepath: Path, *, save_output: bool = False
 ) -> pd.DataFrame:
     """
     Manipulate the successful data into desired CSV format saved as a feather file
@@ -22,7 +22,7 @@ def save_output_journeys(
 
 
 def save_output_failures(
-    data: list[tuple[str, str, int, str]], filepath: Path, *, save_output: bool
+    data: list[tuple[int, str, int, str]], filepath: Path, *, save_output: bool
 ) -> pd.DataFrame:
     """
     Manipulate the failed data into desired CSV format saved as a feather file

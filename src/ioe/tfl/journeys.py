@@ -27,7 +27,7 @@ def _create_journey(
     student: pd.Series,
     school: dict,
     data: dict,
-) -> tuple[str, str, int, str]:
+) -> tuple[int, str, int, str]:
     """
     Create final journey with the shortest leg for the student, school pair
     """
@@ -52,7 +52,7 @@ def _create_failure(
     student: pd.Series,
     school: dict,
     response: Response,
-) -> tuple[str, str, int, str]:
+) -> tuple[int, str, int, str]:
     """
     For a given student school pair give the failure reason
     """
@@ -67,12 +67,12 @@ def _create_failure(
 
 def create_tfl_routes(
     subject: str, student: pd.DataFrame, school: dict[str, str | int]
-) -> tuple[str, str, int, str]:
+) -> tuple[int, tuple[int, str, int, str]]:
     """
     method to be executed by each process filling the same dictionary
     """
     response = get_request_response(student, school)
-    if response.status_code != requests.codes.ok:
-        return _create_failure(subject, student, school, response)
+    if response.status_code != requests.codes.OK:
+        return response.status_code, _create_failure(subject, student, school, response)
     data = response.json()
-    return _create_journey(subject, student, school, data)
+    return response.status_code, _create_journey(subject, student, school, data)

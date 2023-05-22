@@ -1,9 +1,31 @@
+import logging
+
 import openrouteservice
 import pandas as pd
+import requests
 
-from ioe.constants import COLUMN_LATITUDE, COLUMN_LONGITUDE, OPENROUTESERVICE_API_KEY
+from ioe.constants import (
+    COLUMN_LATITUDE,
+    COLUMN_LONGITUDE,
+    COLUMN_SCHOOL_ID,
+    COLUMN_STUDENT_ID,
+    OPENROUTESERVICE_API_KEY,
+)
 
 _client = openrouteservice.Client(key=OPENROUTESERVICE_API_KEY)
+_logger = logging.getLogger(__name__)
+
+
+def _create_journey_instructions(journey: dict) -> tuple[int, str]:
+    """
+    Find the duration and create the message for a single journey
+    """
+    duration = journey["duration"]
+    legs = journey["legs"]
+    message = f"{legs[0]['instruction']['summary']}"
+    message += "".join(f" THEN {leg['instruction']['summary']}" for leg in legs[1:])
+    _logger.debug(message)
+    return duration, message
 
 
 def _calculate_driving_times(student: pd.Series, school: dict[str, str | int]) -> dict:
@@ -20,31 +42,12 @@ def _calculate_driving_times(student: pd.Series, school: dict[str, str | int]) -
         (student[COLUMN_LONGITUDE], student[COLUMN_LATITUDE]),
         (school[COLUMN_LONGITUDE], school[COLUMN_LATITUDE]),
     )
-    routes = _client.directions(coords, profile="driving-car")
-    return min(routes["routes"], key=lambda r: r["summary"]["duration"])
-
-
-# def create_ors_routes(student: pd.Series, school: dict[str, str | int]) -> dict:
-#     """Calls the openrouteservice SDK and finds the minimum driving duration
-
-#     Args:
-#         student: an individual student data
-#         school: an individual school data
-
-#     Returns:
-
-#     """
-#     coords = (
-#         (student[COLUMN_LONGITUDE], student[COLUMN_LATITUDE]),
-#         (school[COLUMN_LONGITUDE], school[COLUMN_LATITUDE]),
-#     )
-#     routes = _client.directions(coords, profile="driving-car")
-#     return min(routes["routes"], key=lambda r: r["summary"]["duration"])
+    return _client.directions(coords, profile="driving-car")
 
 
 def create_ors_routes(
-    args: tuple[str, pd.DataFrame, dict[str, str | int]]
-) -> tuple[list[tuple[str, str, int, str]], list[tuple[str, str, int, str]]]:
+    subject: str, student: pd.DataFrame, school: dict
+) -> tuple[int, tuple[int, str, int, str]]:
     """_summary_
 
     Args:
@@ -53,5 +56,25 @@ def create_ors_routes(
     Returns:
         _description_
     """
-    # so can map in parallel
-    subject, students, school = args
+    # use ORS SDK to get driving data
+    data = _calculate_driving_times(student, school)
+
+    # find the number of journeys
+    found_journeys = data["routes"]
+    _logger.info(
+        f"Number of valid driving journeys found: {len(found_journeys)} for "
+        f"student: {student[COLUMN_STUDENT_ID]} -> school: "
+        f"{school[COLUMN_SCHOOL_ID]}, subject {subject}."
+    )
+
+    # shortest journey
+    shortest_journey = min(found_journeys, key=lambda r: r["summary"]["duration"])
+    duration, message = _create_journey_instructions(shortest_journey)
+
+    # prepare the final output
+    return requests.codes.OK, (
+        student[COLUMN_STUDENT_ID],
+        school[COLUMN_SCHOOL_ID],
+        duration,
+        message,
+    )
