@@ -27,9 +27,7 @@ def _read_args() -> Namespace:
 
 
 def main() -> None:
-    """
-    computes the OD matrices for a given set of student school pairs
-    """
+    """Computes the OD matrices for a given set of student school pairs"""
     args = _read_args()
     students = read_data(_data_location / f"{args.subject}_students.csv")
     schools = read_data(_data_location / f"{args.subject}_schools.csv")

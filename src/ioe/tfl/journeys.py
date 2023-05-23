@@ -13,8 +13,14 @@ _logger = logging.getLogger(__name__)
 def _create_journey_instructions(
     journey: dict, *, transport_mode: str
 ) -> tuple[int, str]:
-    """
-    Find the duration and create the message for a single journey
+    """Find the duration and create the message for a single journey
+
+    Args:
+        journey: _description_
+        transport_mode: _description_
+
+    Returns:
+        _description_
     """
     duration = journey["duration"]
     if transport_mode == "P":
@@ -33,8 +39,16 @@ def _create_journey(
     school: dict,
     data: dict,
 ) -> tuple[int, str, int, str]:
-    """
-    Create final journey with the shortest leg for the student, school pair
+    """Create final journey with the shortest leg for the student, school pair
+
+    Args:
+        subject (str): _description_
+        student (pd.Series): _description_
+        school (dict): _description_
+        data (dict): _description_
+
+    Returns:
+        tuple[int, str, int, str]: _description_
     """
     # find the number of journeys
     found_journeys = data["journeys"]
@@ -75,8 +89,15 @@ def _create_failure(
 def create_tfl_routes(
     subject: str, student: pd.DataFrame, school: dict[str, str | int]
 ) -> tuple[int, tuple[int, str, int, str]]:
-    """
-    method to be executed by each process filling the same dictionary
+    """Method to be executed by each process filling the same dictionary
+
+    Args:
+        subject (str): _description_
+        student (pd.DataFrame): _description_
+        school (dict[str, str  |  int]): _description_
+
+    Returns:
+        tuple[int, tuple[int, str, int, str]]: _description_
     """
     response = get_request_response(student, school)
     if response.status_code != requests.codes.OK:

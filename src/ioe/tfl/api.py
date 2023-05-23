@@ -23,8 +23,14 @@ def get_request_response(
     student: pd.Series,
     school: dict[str, str | int],
 ) -> Response:
-    """
-    Perform GET request and access the response
+    """Perform GET request and access the response
+
+    Args:
+        student: _description_
+        school: _description_
+
+    Returns:
+        _description_
     """
     student_coord = ",".join(student[[COLUMN_LATITUDE, COLUMN_LONGITUDE]].astype(str))
     school_coord = ",".join(

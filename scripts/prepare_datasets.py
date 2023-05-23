@@ -47,7 +47,7 @@ def _convert_postcode_to_lat_lon(
 
     Args:
         df: Input dataframe which includes postcode column
-        postcodes: A list of full GB postcodes
+        postcode_column: A list of full GB postcodes
 
     Returns:
         A dataframe containing all the latitude and longitude
@@ -82,16 +82,24 @@ def _prepare_school_priority_column(df: pd.DataFrame, column: str) -> pd.DataFra
 
 
 def _count_duplicate_schools(df: pd.DataFrame) -> pd.DataFrame:
-    """
-    duplicate schools within a sub-subject should be counted and removed
+    """Duplicate schools within a sub-subject should be counted and removed
+
+    Args:
+        df: _description_
+
+    Returns:
+        _description_
     """
     df[COLUMN_COUNT] = df[COLUMN_SCHOOL_ID].map(df[COLUMN_SCHOOL_ID].value_counts())
     return df.drop_duplicates(subset=COLUMN_SCHOOL_ID)
 
 
 def _parepare_school_data(df: pd.DataFrame, subject: str) -> None:
-    """
-    prepares the student data and saves the output
+    """Prepares the student data and saves the output
+
+    Args:
+        df: _description_
+        subject: _description_
     """
     df = df.copy()
     # prepare priority column
@@ -119,8 +127,10 @@ def _parepare_school_data(df: pd.DataFrame, subject: str) -> None:
 
 
 def _parepare_student_data(df: pd.DataFrame) -> None:
-    """
-    prepares the student data and saves the output
+    """Prepares the student data and saves the output
+
+    Args:
+        df: _description_
     """
     df = df.copy()
     # read data
@@ -147,7 +157,11 @@ def _parepare_student_data(df: pd.DataFrame) -> None:
 
 
 def main(filename: str) -> None:
-    """ """
+    """_summary_
+
+    Args:
+        filename: _description_
+    """
     df = pd.read_excel(_data_location / filename, sheet_name=None)
     for subject, data in df.items():
         _parepare_school_data(data, subject)

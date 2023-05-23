@@ -18,8 +18,13 @@ _logger = logging.getLogger(__name__)
 
 
 def _create_journey_instructions(journey: dict) -> tuple[int, str]:
-    """
-    Find the duration and create the message for a single journey
+    """Find the duration and create the message for a single journey
+
+    Args:
+        journey: _description_
+
+    Returns:
+        _description_
     """
     duration_mins = round(journey["summary"]["duration"] / MINUTES)
     return duration_mins, "Drive"

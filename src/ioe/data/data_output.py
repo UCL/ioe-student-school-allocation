@@ -9,8 +9,15 @@ _logger = logging.getLogger(__name__)
 def save_output_journeys(
     data: list[tuple[int, str, int, str]], filepath: Path, *, save_output: bool = False
 ) -> pd.DataFrame:
-    """
-    Manipulate the successful data into desired CSV format saved as a feather file
+    """Manipulate the successful data into desired CSV format saved as a feather file
+
+    Args:
+        data: _description_
+        filepath: _description_
+        save_output: _description_. Defaults to False.
+
+    Returns:
+        _description_
     """
     df = pd.DataFrame(data, columns=["student", "school", "time", "message"])
     df = df.convert_dtypes()
@@ -24,8 +31,15 @@ def save_output_journeys(
 def save_output_failures(
     data: list[tuple[int, str, int, str]], filepath: Path, *, save_output: bool
 ) -> pd.DataFrame:
-    """
-    Manipulate the failed data into desired CSV format saved as a feather file
+    """Manipulate the failed data into desired CSV format saved as a feather file
+
+    Args:
+        data: _description_
+        filepath: _description_
+        save_output: _description_
+
+    Returns:
+        _description_
     """
     df = pd.DataFrame(data, columns=["student", "school", "code", "reason"])
     df = df.convert_dtypes()
