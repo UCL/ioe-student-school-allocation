@@ -1,5 +1,7 @@
 import logging
 
+from ._version import __version__  # noqa: F401
+
 _logger = logging.getLogger(__name__)
 
 _formatter = logging.Formatter(
