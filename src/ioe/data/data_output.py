@@ -27,7 +27,7 @@ def save_output_failures(
     """
     Manipulate the failed data into desired CSV format saved as a feather file
     """
-    df = pd.DataFrame(data, columns=["student", "school", "travel", "code", "reason"])
+    df = pd.DataFrame(data, columns=["student", "school", "code", "reason"])
     df = df.convert_dtypes()
     df["code"] = pd.to_numeric(df["code"], downcast="unsigned")
     df["reason"] = df["reason"].astype("category")
