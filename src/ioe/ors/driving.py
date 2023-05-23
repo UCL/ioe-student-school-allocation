@@ -10,10 +10,10 @@ from ioe.constants import (
     COLUMN_SCHOOL_ID,
     COLUMN_STUDENT_ID,
     MINUTES,
-    OPENROUTESERVICE_API_KEY,
+    OPENROUTESERVICE_BASE_URL,
 )
 
-_client = openrouteservice.Client(key=OPENROUTESERVICE_API_KEY)
+_client = openrouteservice.Client(base_url=OPENROUTESERVICE_BASE_URL)
 _logger = logging.getLogger(__name__)
 
 

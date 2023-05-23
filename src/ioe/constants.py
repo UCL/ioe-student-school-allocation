@@ -14,7 +14,7 @@ COLUMN_TRAVEL = "Travel"
 MAX_REQUESTS_PER_MINUTE = 250
 MINUTES = 60
 N_CORES = int(os.getenv("N_CORES", default="1"))
-OPENROUTESERVICE_API_KEY = os.getenv("OPENROUTESERVICE_API_KEY")
+OPENROUTESERVICE_BASE_URL = os.getenv("OPENROUTESERVICE_BASE_URL")
 TFL_API_PREFIX = "https://api.tfl.gov.uk/Journey/JourneyResults"
 TFL_APP_KEY = os.getenv("TFL_APP_KEY")
 VALUE_COMPLETED = "completed"
@@ -26,6 +26,6 @@ if TFL_APP_KEY is None:
     error = "Need to set 'TFL_APP_KEY'"
     raise OSError(error)
 
-if OPENROUTESERVICE_API_KEY is None:
-    error = "Need to set 'OPENROUTESERVICE_API_KEY'"
+if OPENROUTESERVICE_BASE_URL is None:
+    error = "Need to set 'OPENROUTESERVICE_BASE_URL'"
     raise OSError(error)
