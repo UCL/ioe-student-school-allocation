@@ -15,6 +15,7 @@ MAX_REQUESTS_PER_MINUTE = 250
 MINUTES = 60
 N_CORES = int(os.getenv("N_CORES", default="1"))
 OPENROUTESERVICE_BASE_URL = os.getenv("OPENROUTESERVICE_BASE_URL")
+OPENROUTESERVICE_TRANSPORT_MODES = {"B": "cycling-regular", "C": "driving-car"}
 TFL_API_PREFIX = "https://api.tfl.gov.uk/Journey/JourneyResults"
 TFL_APP_KEY = os.getenv("TFL_APP_KEY")
 VALUE_COMPLETED = "completed"

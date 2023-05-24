@@ -9,8 +9,10 @@ from ioe.constants import (
     COLUMN_LONGITUDE,
     COLUMN_SCHOOL_ID,
     COLUMN_STUDENT_ID,
+    COLUMN_TRAVEL,
     MINUTES,
     OPENROUTESERVICE_BASE_URL,
+    OPENROUTESERVICE_TRANSPORT_MODES,
 )
 
 _client = openrouteservice.Client(base_url=OPENROUTESERVICE_BASE_URL)
@@ -30,21 +32,23 @@ def _create_journey_instructions(journey: dict) -> tuple[int, str]:
     return duration_mins, "Drive"
 
 
-def _calculate_driving_times(student: pd.Series, school: dict[str, str | int]) -> dict:
-    """Calls the openrouteservice SDK and finds the details of shortest driving routes
+def _calculate_ors_times(student: pd.Series, school: dict[str, str | int]) -> dict:
+    """Calls the openrouteservice SDK and finds the details of shortest routes
 
     Args:
         student: an individual student data
         school: an individual school data
 
     Returns:
-        The details of the minimum driving routes
+        The details of the minimum routes
     """
     coords = (
         (student[COLUMN_LONGITUDE], student[COLUMN_LATITUDE]),
         (school[COLUMN_LONGITUDE], school[COLUMN_LATITUDE]),
     )
-    return _client.directions(coords, profile="driving-car")
+    return _client.directions(
+        coords, profile=OPENROUTESERVICE_TRANSPORT_MODES[student[COLUMN_TRAVEL]]
+    )
 
 
 def create_ors_routes(
@@ -60,13 +64,13 @@ def create_ors_routes(
     Returns:
         The requests code and the output for the journey file
     """
-    # use ORS SDK to get driving data
-    data = _calculate_driving_times(student, school)
+    # use ORS SDK to get ORS data
+    data = _calculate_ors_times(student, school)
 
     # find the number of journeys
     found_journeys = data["routes"]
     _logger.info(
-        f"Number of valid driving journeys found: {len(found_journeys)} for "
+        f"Number of valid ORS journeys found: {len(found_journeys)} for "
         f"student: {student[COLUMN_STUDENT_ID]} -> school: "
         f"{school[COLUMN_SCHOOL_ID]}, subject {subject}."
     )

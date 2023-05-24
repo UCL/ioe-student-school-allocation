@@ -5,73 +5,54 @@ from ioe.constants import TFL_API_PREFIX, TFL_APP_KEY
 _logger = logging.getLogger(__name__)
 
 
-def _handle_transport_modes(transport_mode: str) -> tuple[str, str]:
+def _handle_transport_modes() -> str:
     """Prepare the input to the connection string function from TfL API.
 
     >>> import requests
     >>> [m["modeName"] for m in requests.get(\
         "https://api.tfl.gov.uk/Journey/Meta/Modes").json()]
 
-    Args:
-        transport_mode: The transport mode from the data, "B" or "P"
-
-    Raises:
-        ValueError: Providing an invalid `transport_mode`
-
     Returns:
-        The mode for the API and a cycle preference value
+        The mode for the API
     """
-    match transport_mode:
-        case "B":
-            mode = "cycle"
-            cycle_preference = "allTheWay"
-        case "P":
-            mode = (
-                # "black-cab-as-customer,"
-                # "black-cab-as-driver,"
-                "bus,"
-                "cable-car,"
-                "coach,"
-                # "cycle,"
-                # "cycle-hire,"
-                "dlr,"
-                # "electric-car,"
-                "elizabeth-line,"
-                # "goods-vehicle-as-driver,"
-                "interchange-keep-sitting,"
-                "interchange-secure,"
-                "international-rail,"
-                # "motorbike-scooter,"
-                "national-rail,"
-                "overground,"
-                # "plane,"
-                # "private-car,"
-                # "private-coach-as-customer,"
-                # "private-coach-as-driver,"
-                # "private-hire-as-customer,"
-                # "private-hire-as-driver,"
-                "replacement-bus,"
-                "river-bus,"
-                # "river-tour,"
-                # "taxi,"
-                "tram,"
-                "tube,"
-                "walking,"
-            )
-            cycle_preference = "none"
-        case _:
-            raise ValueError(
-                "`transport_mode` must be either `B` (bike), or"
-                f"`P` (public transport) - found `{transport_mode}`"
-            )
-    return mode, cycle_preference
+    return (
+        # "black-cab-as-customer,"
+        # "black-cab-as-driver,"
+        "bus,"
+        "cable-car,"
+        "coach,"
+        # "cycle,"
+        # "cycle-hire,"
+        "dlr,"
+        # "electric-car,"
+        "elizabeth-line,"
+        # "goods-vehicle-as-driver,"
+        "interchange-keep-sitting,"
+        "interchange-secure,"
+        "international-rail,"
+        # "motorbike-scooter,"
+        "national-rail,"
+        "overground,"
+        # "plane,"
+        # "private-car,"
+        # "private-coach-as-customer,"
+        # "private-coach-as-driver,"
+        # "private-hire-as-customer,"
+        # "private-hire-as-driver,"
+        "replacement-bus,"
+        "river-bus,"
+        # "river-tour,"
+        # "taxi,"
+        "tram,"
+        "tube,"
+        "walking,"
+    )
 
 
 def create_connection_string(  # noqa: PLR0913
     student: str,
     school: str,
     *,
-    mode: str,
     accessibilityPreference: str = "noRequirements",  # noqa: N803
     adjustment: str = "tripLast",
     alternativeCycle: bool = False,  # noqa: N803
@@ -117,7 +98,7 @@ def create_connection_string(  # noqa: PLR0913
     # remove irrelevant option for API
     del inputs["student"], inputs["school"]
     # override custom options
-    inputs["mode"], inputs["cyclePreference"] = _handle_transport_modes(mode)
+    inputs["mode"] = _handle_transport_modes()
     # prepare optinal queries
     optional_queries = "".join(
         f"&{k}={v}" for (k, v) in inputs.items() if v != ""  # noqa: PLC1901

@@ -6,7 +6,6 @@ from requests_ratelimiter import LimiterAdapter
 from ioe.constants import (
     COLUMN_LATITUDE,
     COLUMN_LONGITUDE,
-    COLUMN_TRAVEL,
     MAX_REQUESTS_PER_MINUTE,
     TFL_API_PREFIX,
 )
@@ -39,6 +38,5 @@ def get_request_response(
     connection_string = create_connection_string(
         student_coord,
         school_coord,
-        mode=student[COLUMN_TRAVEL],
     )
     return _session.get(connection_string)

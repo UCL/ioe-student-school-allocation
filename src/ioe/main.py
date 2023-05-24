@@ -5,7 +5,7 @@ import pandas as pd
 import requests
 
 from ioe.constants import COLUMN_SCHOOL_ID, COLUMN_TRAVEL
-from ioe.ors.driving import create_ors_routes
+from ioe.ors.routing import create_ors_routes
 from ioe.tfl.journeys import create_tfl_routes
 
 _logger = logging.getLogger(__name__)
@@ -32,9 +32,9 @@ def _process_individual_student(
     _logger.info(f"New school: {school[COLUMN_SCHOOL_ID]}, subject {subject}")
     for _, student in students.iterrows():
         status_code, route = (
-            create_ors_routes(subject, student, school)
-            if student[COLUMN_TRAVEL] == "C"
-            else create_tfl_routes(subject, student, school)
+            create_tfl_routes(subject, student, school)
+            if student[COLUMN_TRAVEL] == "P"
+            else create_ors_routes(subject, student, school)
         )
         if status_code == requests.codes.OK:
             journeys.append(route)
