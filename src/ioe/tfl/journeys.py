@@ -37,7 +37,7 @@ def _create_journey(
     subject: str,
     student: pd.Series,
     school: dict,
-    data: dict,
+    response: Response,
 ) -> tuple[int, str, int, str]:
     """Create final journey with the shortest leg for the student, school pair
 
@@ -45,13 +45,13 @@ def _create_journey(
         subject: The school subject
         student: Individual student data
         school: Individual school data
-        data: The output from the ORS API
+        response: The TfL API response
 
     Returns:
         The student, school, duration, and output message
     """
     # find the number of journeys
-    found_journeys = data["journeys"]
+    found_journeys = response.json()["journeys"]
     _logger.info(
         f"Number of valid TfL journeys found: {len(found_journeys)} for "
         f"student: {student[COLUMN_STUDENT_ID]} -> school: "
@@ -110,5 +110,4 @@ def create_tfl_routes(
     response = get_request_response(student, school)
     if response.status_code != requests.codes.OK:
         return response.status_code, _create_failure(subject, student, school, response)
-    data = response.json()
-    return response.status_code, _create_journey(subject, student, school, data)
+    return response.status_code, _create_journey(subject, student, school, response)
