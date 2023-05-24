@@ -17,10 +17,10 @@ def _process_individual_student(
     """Method to be executed by each process filling the same dictionary.
 
     Args:
-        args: _description_
+        args: The subject, students, and school data
 
     Returns:
-        _description_
+        The successful journeys and the failed journeys
     """
     # so can map in parallel
     subject, students, school = args
@@ -53,13 +53,13 @@ def compute_all_pairs_journeys(
     """Loop through all students and school to find the min journey time for each.
 
     Args:
-        subject: _description_
-        students: _description_
-        schools: _description_
-        n_cores (optional): _description_. Defaults to 1.
+        subject: The subject
+        students: The students dataframe
+        schools: The schools dataframe
+        n_cores (optional): The number of cores to parallelise over. Defaults to 1.
 
     Returns:
-        _description_
+        The full successful journeys and failed journeys
     """
     _logger.info(f"Start process with {n_cores} cores for subject {subject}")
     args = [(subject, students, school) for school in schools.to_dict("records")]

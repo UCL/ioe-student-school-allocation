@@ -6,13 +6,20 @@ _logger = logging.getLogger(__name__)
 
 
 def _handle_transport_modes(transport_mode: str) -> tuple[str, str]:
-    """
-    For the problem at hand there are three valid options,
-    prepare the input to the connection string function.
+    """Prepare the input to the connection string function from TfL API.
 
     >>> import requests
     >>> [m["modeName"] for m in requests.get(\
         "https://api.tfl.gov.uk/Journey/Meta/Modes").json()]
+
+    Args:
+        transport_mode: The transport mode from the data, "B" or "P"
+
+    Raises:
+        ValueError: Providing an invalid `transport_mode`
+
+    Returns:
+        The mode for the API and a cycle preference value
     """
     match transport_mode:
         case "B":
@@ -91,13 +98,19 @@ def create_connection_string(  # noqa: PLR0913
     walkingOptimization: bool = True,  # noqa: N803
     walkingSpeed: str = "average",  # noqa: N803
 ) -> str:
-    """
-    Creates the optional arguments for the TfL API
+    """Creates the optional arguments for the TfL API
 
     Full API options:
     >>> import requests
     >>> requests.get('https://api.tfl.gov.uk/swagger/docs/v1').json()['paths']\
         ['/Journey/JourneyResults/{from}/to/{to}']['get']['parameters']
+
+    Args:
+        student: student lat,lon
+        school: school lat,lon
+
+    Returns:
+        The connection URL
     """
     # retrieve all inputs
     inputs = dict(locals())

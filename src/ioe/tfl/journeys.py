@@ -16,11 +16,11 @@ def _create_journey_instructions(
     """Find the duration and create the message for a single journey
 
     Args:
-        journey: _description_
-        transport_mode: _description_
+        journey: The successful journey
+        transport_mode: Mode either "P" or "B"
 
     Returns:
-        _description_
+        The duration in minutes and a route description
     """
     duration = journey["duration"]
     if transport_mode == "P":
@@ -42,13 +42,13 @@ def _create_journey(
     """Create final journey with the shortest leg for the student, school pair
 
     Args:
-        subject (str): _description_
-        student (pd.Series): _description_
-        school (dict): _description_
-        data (dict): _description_
+        subject: The school subject
+        student: Individual student data
+        school: Individual school data
+        data: The output from the ORS API
 
     Returns:
-        tuple[int, str, int, str]: _description_
+        The student, school, duration, and output message
     """
     # find the number of journeys
     found_journeys = data["journeys"]
@@ -74,8 +74,16 @@ def _create_failure(
     school: dict,
     response: Response,
 ) -> tuple[int, str, int, str]:
-    """
-    For a given student school pair give the failure reason
+    """For a given student school pair give the failure reason
+
+    Args:
+        subject: School subject
+        student: Individual student data
+        school: Individual school data
+        response: The API response
+
+    Returns:
+        The student, school, reponse code, reason of failure
     """
     code = response.status_code
     reason = response.reason
@@ -92,12 +100,12 @@ def create_tfl_routes(
     """Method to be executed by each process filling the same dictionary
 
     Args:
-        subject (str): _description_
-        student (pd.DataFrame): _description_
-        school (dict[str, str  |  int]): _description_
+        subject: School subject
+        student: Individual student data
+        school: Individual school data
 
     Returns:
-        tuple[int, tuple[int, str, int, str]]: _description_
+        Response code, and the journey/failure
     """
     response = get_request_response(student, school)
     if response.status_code != requests.codes.OK:

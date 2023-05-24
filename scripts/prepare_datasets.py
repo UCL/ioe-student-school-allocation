@@ -57,13 +57,21 @@ def _convert_postcode_to_lat_lon(
 
 
 def _prepare_school_priority_column(df: pd.DataFrame, column: str) -> pd.DataFrame:
-    """
-    the priority column for schools has the following:
+    """Prepares the school priority column
+
+    The priority column for schools has the following:
     * i.e. `2 (use)` to be replaced wirh `2`
     * mark those `Do not use` but `Completed` as `2`
     * Remaining `Do not use` to be removed
     * `Not applicable` to be removed
     * `Not known` to be replaced with `2`
+
+    Args:
+        df: The input dataframe
+        column: The priority column
+
+    Returns:
+        The prepared prioirity column
     """
     df = df.copy()
     # overide some do not use columns
@@ -85,10 +93,10 @@ def _count_duplicate_schools(df: pd.DataFrame) -> pd.DataFrame:
     """Duplicate schools within a sub-subject should be counted and removed
 
     Args:
-        df: _description_
+        df: Input dataframe
 
     Returns:
-        _description_
+        The dataframe with duplicate schools changed to a count column
     """
     df[COLUMN_COUNT] = df[COLUMN_SCHOOL_ID].map(df[COLUMN_SCHOOL_ID].value_counts())
     return df.drop_duplicates(subset=COLUMN_SCHOOL_ID)
@@ -98,8 +106,8 @@ def _parepare_school_data(df: pd.DataFrame, subject: str) -> None:
     """Prepares the student data and saves the output
 
     Args:
-        df: _description_
-        subject: _description_
+        df: The input dataframe
+        subject: The given subject column
     """
     df = df.copy()
     # prepare priority column
@@ -130,7 +138,7 @@ def _parepare_student_data(df: pd.DataFrame) -> None:
     """Prepares the student data and saves the output
 
     Args:
-        df: _description_
+        df: The input dataframe
     """
     df = df.copy()
     # read data
@@ -157,10 +165,10 @@ def _parepare_student_data(df: pd.DataFrame) -> None:
 
 
 def main(filename: str) -> None:
-    """_summary_
+    """Prepares the school and student data for each subject
 
     Args:
-        filename: _description_
+        filename: The input filename
     """
     df = pd.read_excel(_data_location / filename, sheet_name=None)
     for subject, data in df.items():

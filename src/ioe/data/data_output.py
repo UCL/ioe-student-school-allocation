@@ -12,12 +12,12 @@ def save_output_journeys(
     """Manipulate the successful data into desired CSV format saved as a feather file
 
     Args:
-        data: _description_
-        filepath: _description_
-        save_output: _description_. Defaults to False.
+        data: The successful data to save
+        filepath: The output filename
+        save_output: Whether to not to save the output. Defaults to False.
 
     Returns:
-        _description_
+        The successful journeys dataframe
     """
     df = pd.DataFrame(data, columns=["student", "school", "time", "message"])
     df = df.convert_dtypes()
@@ -29,17 +29,17 @@ def save_output_journeys(
 
 
 def save_output_failures(
-    data: list[tuple[int, str, int, str]], filepath: Path, *, save_output: bool
+    data: list[tuple[int, str, int, str]], filepath: Path, *, save_output: bool = False
 ) -> pd.DataFrame:
     """Manipulate the failed data into desired CSV format saved as a feather file
 
     Args:
-        data: _description_
-        filepath: _description_
-        save_output: _description_
+        data: The failure data to save
+        filepath: The output filename
+        save_output: Whether to not to save the output. Defaults to False.
 
     Returns:
-        _description_
+        The successful journeys dataframe
     """
     df = pd.DataFrame(data, columns=["student", "school", "code", "reason"])
     df = df.convert_dtypes()

@@ -26,11 +26,11 @@ def get_request_response(
     """Perform GET request and access the response
 
     Args:
-        student: _description_
-        school: _description_
+        student: An individual student data
+        school: An individual school data
 
     Returns:
-        _description_
+        The API response
     """
     student_coord = ",".join(student[[COLUMN_LATITUDE, COLUMN_LONGITUDE]].astype(str))
     school_coord = ",".join(

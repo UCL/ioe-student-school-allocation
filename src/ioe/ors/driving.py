@@ -21,10 +21,10 @@ def _create_journey_instructions(journey: dict) -> tuple[int, str]:
     """Find the duration and create the message for a single journey
 
     Args:
-        journey: _description_
+        journey: The successful journeys
 
     Returns:
-        _description_
+        The minutes in duration and an output string
     """
     duration_mins = round(journey["summary"]["duration"] / MINUTES)
     return duration_mins, "Drive"
@@ -50,13 +50,15 @@ def _calculate_driving_times(student: pd.Series, school: dict[str, str | int]) -
 def create_ors_routes(
     subject: str, student: pd.DataFrame, school: dict
 ) -> tuple[int, tuple[int, str, int, str]]:
-    """_summary_
+    """Creates the routes from the openrouteservice
 
     Args:
-        args: _description_
+        subject: The subject data
+        student: The student dataframe
+        school: The shool dictionary
 
     Returns:
-        _description_
+        The requests code and the output for the journey file
     """
     # use ORS SDK to get driving data
     data = _calculate_driving_times(student, school)
