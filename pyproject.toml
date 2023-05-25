@@ -19,6 +19,7 @@ classifiers = [
 dependencies = [
     "filelock>=3.12.0",
     "openpyxl>=3.1.2",
+    "openrouteservice>=2.3.3",
     "pandas>=2.0.1",
     "pgeocode@git+https://github.com/symerio/pgeocode.git@d5f89074ea73b392e0a21b275dbc002397c4b63c",
     "plotly>=5.14.1",
@@ -38,21 +39,17 @@ keywords = [
     "tfl-api",
 ]
 name = "ioe"
-readme = "README.md"
-requires-python = ">=3.9"
-license.file = "LICENCE.md"
-optional-dependencies.dev = [
+optional-dependencies = {"dev" = [
     "black",
     "mypy",
     "pre-commit",
-    "tox",
-]
+    "ruff",
+]}
+readme = "README.md"
+requires-python = ">=3.10"
+urls = {Code = "https://github.com/UCL/ioe-student-school-allocation", Homepage = "https://github.com/astro-informatics/sleplet", Issues = "https://github.com/UCL/ioe-student-school-allocation/issues"}
+license.file = "LICENCE.md"
 scripts.tfl = "ioe.scripts.tfl:main"
-urls.homepage = "https://github.com/UCL/ioe-student-school-allocation"
-
-[tool.mypy]
-explicit_package_bases = true
-plugins = "numpy.typing.mypy_plugin"
 
 [tool.ruff]
 fix = true
@@ -88,6 +85,8 @@ select = [
     "W",
     "YTT",
 ]
+target-version = "py310"
+isort.known-first-party = ["ioe"]
 mccabe.max-complexity = 18
 
 [tool.setuptools_scm]
