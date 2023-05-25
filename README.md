@@ -13,5 +13,5 @@ pip install -e .
 A subject may then be processed.
 
 ```sh
-tfl data example_subject
+tfl example_subject
 ```
