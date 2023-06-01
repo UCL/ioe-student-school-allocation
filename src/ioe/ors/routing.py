@@ -31,7 +31,7 @@ def _create_journey_instructions(journey: dict, student: pd.Series) -> tuple[int
 
     Args:
         journey: The successful journeys
-        school: an individual school data
+        student: an individual student data
 
     Returns:
         The minutes in duration and an output string
