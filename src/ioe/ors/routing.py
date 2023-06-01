@@ -26,17 +26,18 @@ else:
     _logger.info("API key method selected")
 
 
-def _create_journey_instructions(journey: dict) -> tuple[int, str]:
+def _create_journey_instructions(journey: dict, student: pd.Series) -> tuple[int, str]:
     """Find the duration and create the message for a single journey
 
     Args:
         journey: The successful journeys
+        school: an individual school data
 
     Returns:
         The minutes in duration and an output string
     """
     duration_mins = round(journey["summary"]["duration"] / MINUTES)
-    return duration_mins, "Drive"
+    return duration_mins, OPENROUTESERVICE_TRANSPORT_MODES[student[COLUMN_TRAVEL]]
 
 
 def _calculate_ors_times(student: pd.Series, school: dict[str, str | int]) -> dict:
@@ -84,7 +85,7 @@ def create_ors_routes(
 
     # shortest journey
     shortest_journey = min(found_journeys, key=lambda r: r["summary"]["duration"])
-    duration, message = _create_journey_instructions(shortest_journey)
+    duration, message = _create_journey_instructions(shortest_journey, student)
 
     # prepare the final output
     return requests.codes.OK, (
