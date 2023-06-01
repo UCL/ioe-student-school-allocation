@@ -11,12 +11,19 @@ from ioe.constants import (
     COLUMN_STUDENT_ID,
     COLUMN_TRAVEL,
     MINUTES,
+    OPENROUTESERVICE_API_KEY,
     OPENROUTESERVICE_BASE_URL,
     OPENROUTESERVICE_TRANSPORT_MODES,
 )
 
-_client = openrouteservice.Client(base_url=OPENROUTESERVICE_BASE_URL)
 _logger = logging.getLogger(__name__)
+
+if OPENROUTESERVICE_BASE_URL is not None:
+    _client = openrouteservice.Client(base_url=OPENROUTESERVICE_BASE_URL)
+    _logger.info(f"On-premise method selected for URL {OPENROUTESERVICE_BASE_URL}")
+else:
+    _client = openrouteservice.Client(key=OPENROUTESERVICE_API_KEY)
+    _logger.info("API key method selected")
 
 
 def _create_journey_instructions(journey: dict) -> tuple[int, str]:
