@@ -1,5 +1,6 @@
 from argparse import ArgumentParser
 from pathlib import Path
+from typing import Tuple
 
 import pandas as pd
 import pgeocode
@@ -18,12 +19,12 @@ STUDENT_LONGITUDE = "longitude_student"
 STUDENT_POSTCODE = "ST: Term PC"
 
 _file_location = Path(__file__).resolve()
-_nomi = pgeocode.Nominatim("GB_full")
+#_nomi = pgeocode.Nominatim("GB_full")
 
 
 def _read_data(
     subject: str,
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Reads in the initial school, the matches from `spopt` and the
     UK database on postcodes and prepare the data for processing.
 
@@ -36,20 +37,17 @@ def _read_data(
     # prepare whole school data
     schools = pd.read_csv(
         _file_location.parents[1] / "data" / f"{subject}_schools.csv",
-        usecols=[SCHOOL_ID, SCHOOL_POSTCODE],
+        usecols=[SCHOOL_ID, LATITUDE_COL, LONGITUDE_COL],
     ).convert_dtypes()
     # prepare whole student data
     students = pd.read_csv(
         _file_location.parents[1] / "data" / f"{subject}_students.csv",
-        usecols=[STUDENT_ID, STUDENT_POSTCODE],
+        usecols=[STUDENT_ID, LATITUDE_COL, LONGITUDE_COL],
     ).convert_dtypes()
     # prepare spopt allocated data
     matches = pd.read_csv(
-        _file_location.parent / f"{subject}_matches.csv",
-        usecols=[
-            STUDENT_ID,
-            MATCHES_SCHOOL_ID,
-        ],
+        _file_location.parents[1] /  "data" / f"{subject}_matches.csv",
+        usecols=[STUDENT_ID, MATCHES_SCHOOL_ID],
     ).convert_dtypes()
     return schools, students, matches
 
@@ -74,25 +72,16 @@ def _prepare_data(
     schools_merge_matches = schools.merge(
         matches, how="left", left_on=SCHOOL_ID, right_on=MATCHES_SCHOOL_ID
     ).drop(columns=MATCHES_SCHOOL_ID)
+    schools_merge_matches = schools_merge_matches.rename(
+        columns={LONGITUDE_COL:SCHOOL_LONGITUDE, LATITUDE_COL:SCHOOL_LATITUDE})
     # merge students with the composite matches
     matches_merge_students = schools_merge_matches.merge(
         students, how="left", on=STUDENT_ID
     )
-    # merge the result with the UK database to get school lat lon coords
-    matches_merge_students[
-        [SCHOOL_LATITUDE, SCHOOL_LONGITUDE]
-    ] = _nomi.query_postal_code(matches_merge_students[SCHOOL_POSTCODE].values)[
-        [LATITUDE_COL, LONGITUDE_COL]
-    ]
-    # merge the result with the UK database to get student lat lon coords
-    matches_merge_students[
-        [STUDENT_LATITUDE, STUDENT_LONGITUDE]
-    ] = _nomi.query_postal_code(matches_merge_students[STUDENT_POSTCODE].values)[
-        [LATITUDE_COL, LONGITUDE_COL]
-    ]
-    # remove unrequired columns
-    return matches_merge_students.drop(columns=[SCHOOL_POSTCODE, STUDENT_POSTCODE])
-
+    matches_merge_students = matches_merge_students.rename(
+        columns={LONGITUDE_COL:STUDENT_LONGITUDE,LATITUDE_COL:STUDENT_LATITUDE})
+    # remove NAs
+    return matches_merge_students.dropna()
 
 def _prepare_connecting_lines(df: pd.DataFrame) -> pd.DataFrame:
     """Prepares the dataframe in a format such that lines can be drawn on the map.
@@ -150,7 +139,7 @@ def _prepare_plot(subject: str, df: pd.DataFrame) -> None:
     fig.update_layout(mapbox_style="open-street-map")
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
     filename = f"matched_student_school_pairs_{subject}"
-    fig.write_html(_file_location.parent / f"{filename}.html")
+    fig.write_html(_file_location.parents[1] / 'plot' / f"{filename}.html")
     fig.show(config={"toImageButtonOptions": {"filename": filename}})
 
 
