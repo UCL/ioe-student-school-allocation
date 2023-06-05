@@ -13,4 +13,5 @@ dist
 !example_subject_students.csv
 !example_subject_student_school_failures.csv
 !example_subject_student_school_journeys.csv
+!example_subject_matches.csv
 .ipynb_checkpoints/reproducible-example-checkpoint.ipynb
