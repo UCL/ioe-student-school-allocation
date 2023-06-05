@@ -4,6 +4,7 @@ from pathlib import Path
 import pandas as pd
 import pgeocode
 import plotly.express as px
+from plotly import io as pio
 
 LATITUDE_COL = "latitude"
 LONGITUDE_COL = "longitude"
@@ -34,18 +35,30 @@ def _read_data(
         The three prepared dataframes.
     """
     # prepare whole school data
-    schools = pd.read_csv(
-        _file_location.parents[1] / "data" / f"{subject}_schools.csv",
-        usecols=[SCHOOL_ID, SCHOOL_POSTCODE],
-    ).convert_dtypes()
+    schools = (
+        pd.read_csv(
+            _file_location.parents[1] / "data" / f"{subject}_schools.csv",
+            usecols=[SCHOOL_ID, LATITUDE_COL, LONGITUDE_COL],
+        )
+        .rename(
+            columns={LONGITUDE_COL: SCHOOL_LONGITUDE, LATITUDE_COL: SCHOOL_LATITUDE}
+        )
+        .convert_dtypes()
+    )
     # prepare whole student data
-    students = pd.read_csv(
-        _file_location.parents[1] / "data" / f"{subject}_students.csv",
-        usecols=[STUDENT_ID, STUDENT_POSTCODE],
-    ).convert_dtypes()
+    students = (
+        pd.read_csv(
+            _file_location.parents[1] / "data" / f"{subject}_students.csv",
+            usecols=[STUDENT_ID, LATITUDE_COL, LONGITUDE_COL],
+        )
+        .rename(
+            columns={LONGITUDE_COL: STUDENT_LONGITUDE, LATITUDE_COL: STUDENT_LATITUDE}
+        )
+        .convert_dtypes()
+    )
     # prepare spopt allocated data
     matches = pd.read_csv(
-        _file_location.parent / f"{subject}_matches.csv",
+        _file_location.parents[1] / "data" / f"{subject}_matches.csv",
         usecols=[
             STUDENT_ID,
             MATCHES_SCHOOL_ID,
@@ -78,20 +91,8 @@ def _prepare_data(
     matches_merge_students = schools_merge_matches.merge(
         students, how="left", on=STUDENT_ID
     )
-    # merge the result with the UK database to get school lat lon coords
-    matches_merge_students[
-        [SCHOOL_LATITUDE, SCHOOL_LONGITUDE]
-    ] = _nomi.query_postal_code(matches_merge_students[SCHOOL_POSTCODE].values)[
-        [LATITUDE_COL, LONGITUDE_COL]
-    ]
-    # merge the result with the UK database to get student lat lon coords
-    matches_merge_students[
-        [STUDENT_LATITUDE, STUDENT_LONGITUDE]
-    ] = _nomi.query_postal_code(matches_merge_students[STUDENT_POSTCODE].values)[
-        [LATITUDE_COL, LONGITUDE_COL]
-    ]
-    # remove unrequired columns
-    return matches_merge_students.drop(columns=[SCHOOL_POSTCODE, STUDENT_POSTCODE])
+    # remove NaNs
+    return matches_merge_students.dropna()
 
 
 def _prepare_connecting_lines(df: pd.DataFrame) -> pd.DataFrame:
@@ -151,7 +152,7 @@ def _prepare_plot(subject: str, df: pd.DataFrame) -> None:
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
     filename = f"matched_student_school_pairs_{subject}"
     fig.write_html(_file_location.parent / f"{filename}.html")
-    fig.show(config={"toImageButtonOptions": {"filename": filename}})
+    pio.show(fig, config={"toImageButtonOptions": {"filename": filename}})
 
 
 def main(subject: str) -> None:

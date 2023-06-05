@@ -60,7 +60,7 @@ def create_connection_string(  # noqa: PLR0913
     applyHtmlMarkup: bool = False,  # noqa: N803
     bikeProficiency: str = "moderate",  # noqa: N803
     calcOneDirection: bool = True,  # noqa: N803
-    cyclePreference: str = "allTheWay",  # noqa: N803
+    cyclePreference: str = "none",  # noqa: N803
     date: str = "",
     fromName: str = "",  # noqa: N803
     journeyPreference: str = "leastTime",  # noqa: N803

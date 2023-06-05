@@ -11,25 +11,33 @@ from ioe.constants import (
     COLUMN_STUDENT_ID,
     COLUMN_TRAVEL,
     MINUTES,
+    OPENROUTESERVICE_API_KEY,
     OPENROUTESERVICE_BASE_URL,
     OPENROUTESERVICE_TRANSPORT_MODES,
 )
 
-_client = openrouteservice.Client(base_url=OPENROUTESERVICE_BASE_URL)
 _logger = logging.getLogger(__name__)
 
+if OPENROUTESERVICE_BASE_URL is not None:
+    _client = openrouteservice.Client(base_url=OPENROUTESERVICE_BASE_URL)
+    _logger.info(f"On-premise method selected for URL {OPENROUTESERVICE_BASE_URL}")
+else:
+    _client = openrouteservice.Client(key=OPENROUTESERVICE_API_KEY)
+    _logger.info("API key method selected")
 
-def _create_journey_instructions(journey: dict) -> tuple[int, str]:
+
+def _create_journey_instructions(journey: dict, student: pd.Series) -> tuple[int, str]:
     """Find the duration and create the message for a single journey
 
     Args:
         journey: The successful journeys
+        student: an individual student data
 
     Returns:
         The minutes in duration and an output string
     """
     duration_mins = round(journey["summary"]["duration"] / MINUTES)
-    return duration_mins, "Drive"
+    return duration_mins, OPENROUTESERVICE_TRANSPORT_MODES[student[COLUMN_TRAVEL]]
 
 
 def _calculate_ors_times(student: pd.Series, school: dict[str, str | int]) -> dict:
@@ -77,7 +85,7 @@ def create_ors_routes(
 
     # shortest journey
     shortest_journey = min(found_journeys, key=lambda r: r["summary"]["duration"])
-    duration, message = _create_journey_instructions(shortest_journey)
+    duration, message = _create_journey_instructions(shortest_journey, student)
 
     # prepare the final output
     return requests.codes.OK, (
