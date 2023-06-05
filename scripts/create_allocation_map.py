@@ -4,6 +4,7 @@ from pathlib import Path
 import pandas as pd
 import pgeocode
 import plotly.express as px
+from plotly import io as pio
 
 LATITUDE_COL = "latitude"
 LONGITUDE_COL = "longitude"
@@ -34,19 +35,34 @@ def _read_data(
         The three prepared dataframes.
     """
     # prepare whole school data
-    schools = pd.read_csv(
-        _file_location.parents[1] / "data" / f"{subject}_schools.csv",
-        usecols=[SCHOOL_ID, LATITUDE_COL, LONGITUDE_COL],
-    ).convert_dtypes()
+    schools = (
+        pd.read_csv(
+            _file_location.parents[1] / "data" / f"{subject}_schools.csv",
+            usecols=[SCHOOL_ID, LATITUDE_COL, LONGITUDE_COL],
+        )
+        .rename(
+            columns={LONGITUDE_COL: SCHOOL_LONGITUDE, LATITUDE_COL: SCHOOL_LATITUDE}
+        )
+        .convert_dtypes()
+    )
     # prepare whole student data
-    students = pd.read_csv(
-        _file_location.parents[1] / "data" / f"{subject}_students.csv",
-        usecols=[STUDENT_ID, LATITUDE_COL, LONGITUDE_COL],
-    ).convert_dtypes()
+    students = (
+        pd.read_csv(
+            _file_location.parents[1] / "data" / f"{subject}_students.csv",
+            usecols=[STUDENT_ID, LATITUDE_COL, LONGITUDE_COL],
+        )
+        .rename(
+            columns={LONGITUDE_COL: STUDENT_LONGITUDE, LATITUDE_COL: STUDENT_LATITUDE}
+        )
+        .convert_dtypes()
+    )
     # prepare spopt allocated data
     matches = pd.read_csv(
         _file_location.parents[1] / "data" / f"{subject}_matches.csv",
-        usecols=[STUDENT_ID, MATCHES_SCHOOL_ID],
+        usecols=[
+            STUDENT_ID,
+            MATCHES_SCHOOL_ID,
+        ],
     ).convert_dtypes()
     return schools, students, matches
 
@@ -71,17 +87,11 @@ def _prepare_data(
     schools_merge_matches = schools.merge(
         matches, how="left", left_on=SCHOOL_ID, right_on=MATCHES_SCHOOL_ID
     ).drop(columns=MATCHES_SCHOOL_ID)
-    schools_merge_matches = schools_merge_matches.rename(
-        columns={LONGITUDE_COL: SCHOOL_LONGITUDE, LATITUDE_COL: SCHOOL_LATITUDE}
-    )
     # merge students with the composite matches
     matches_merge_students = schools_merge_matches.merge(
         students, how="left", on=STUDENT_ID
     )
-    matches_merge_students = matches_merge_students.rename(
-        columns={LONGITUDE_COL: STUDENT_LONGITUDE, LATITUDE_COL: STUDENT_LATITUDE}
-    )
-    # remove NAs
+    # remove NaNs
     return matches_merge_students.dropna()
 
 
@@ -141,8 +151,8 @@ def _prepare_plot(subject: str, df: pd.DataFrame) -> None:
     fig.update_layout(mapbox_style="open-street-map")
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
     filename = f"matched_student_school_pairs_{subject}"
-    fig.write_html(_file_location.parents[1] / "plot" / f"{filename}.html")
-    fig.show(config={"toImageButtonOptions": {"filename": filename}})
+    fig.write_html(_file_location.parent / f"{filename}.html")
+    pio.show(fig, config={"toImageButtonOptions": {"filename": filename}})
 
 
 def main(subject: str) -> None:
