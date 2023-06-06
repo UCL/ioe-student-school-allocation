@@ -1,17 +1,59 @@
 # IOE Student School Allocation
 
-Public release of the code for paper 846 of AGILE2023. This is linked from the camera ready version of the paper submitted on 21 April 2023, and will be updated with additional example code, including the implimentation of the capacitated p-median location-allocation model in the spopt library in time for the AGILE conference in June 2023.
+This site demonstrates the capacitated p-median location-allocation mode
+developed for AGILE paper 846, Developing capacitated p-median
+location-allocation model in the `spopt` library to allow UCL student teacher
+placements using public transport.
 
-## Installation
+This repository includes the code for the "App" to create an Origin-Destination
+matrix from a series of school and student postcodes (app on the figure below)
+and an example
+[Jupyter Notebook](https://github.com/UCL/ioe-student-school-allocation/blob/main/reproducible-notebook.ipynb)
+demonstrating how this is applied in practice.
 
-```sh
-pip install -e .
+![flowchart](https://github.com/UCL/ioe-student-school-allocation/blob/main/agile/mermaid-flowchart.png)
+
+This work was presented at AGILE 2023 by Nick Bearman & Levi Wolf.
+
+- [Presentation](https://github.com/UCL/ioe-student-school-allocation/blob/main/agile/presentation.pdf)
+- [Short Paper](https://github.com/UCL/ioe-student-school-allocation/blob/main/agile/short-paper.pdf)
+
+Currently, (as at 06/06/2023) the new code developed for `spopt` is not
+integrated in to the main `spopt` version. There is currently a PR in progress
+for this at <https://github.com/pysal/spopt/pull/374/>.
+
+## Installation of pre-processing code
+
+Install using `pip`:
+
+```python
+python -m pip install -e .
 ```
 
-## Prepare the Journey Data
+You will also need to add a TfL API key, available from
+<https://api-portal.tfl.gov.uk/>. It is set in `.envrc_sample`
+`export TFL_APP_KEY=`
 
-A subject may then be processed.
+What you should do is
+
+```sh
+cp .envrc_sample .envrc
+```
+
+Then put in the key. Then run
+
+```sh
+source .envrc
+```
+
+Then re-run. You can check if it’s worked by running `echo $TFL_APP_KEY`, and
+`export N_CORES=1`.
+
+Run using
 
 ```sh
 tfl example_subject
 ```
+
+For more details, see the
+[Juypter Notebook example](https://github.com/UCL/ioe-student-school-allocation/blob/main/reproducible-example.ipynb).

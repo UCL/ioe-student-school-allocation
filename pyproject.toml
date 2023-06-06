@@ -23,9 +23,11 @@ dependencies = [
     "pandas>=2.0.1",
     "pgeocode@git+https://github.com/symerio/pgeocode.git@d5f89074ea73b392e0a21b275dbc002397c4b63c",
     "plotly>=5.14.1",
+    "pulp>=2.7.0",
     "pyrate-limiter>=2.10.0",
     "requests-ratelimiter>=0.4.0",
     "requests>=2.28.2",
+    "spopt@git+https://github.com/rongboxu/spopt",
 ]
 description = "Public release of the code for paper 846 of AGILE2023"
 dynamic = [
@@ -40,7 +42,7 @@ keywords = [
 ]
 name = "ioe"
 optional-dependencies = {"dev" = [
-    "black",
+    "black[jupyter]",
     "mypy",
     "pre-commit",
     "ruff",
@@ -54,10 +56,10 @@ scripts.tfl = "ioe.scripts.tfl:main"
 [tool.ruff]
 fix = true
 force-exclude = true
-ignore = [
-    "EM102",
-    "S113",
-]
+per-file-ignores = {"reproducible-example*" = [
+    "S101",
+    "T201",
+]}
 select = [
     "A",
     "B",
