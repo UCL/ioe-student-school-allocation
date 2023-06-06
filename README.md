@@ -3,7 +3,7 @@
 This site demonstrates the capacitated p-median location-allocation mode developed for AGILE paper 846, Developing capacitated p-median location-allocation model in the spopt library to allow UCL student
 teacher placements using public transport.
 
-This repository includes the code for the "app" to create an Origin-Destination matrix from a series of school and student postcodes (app on the figure below) and an example [Jupyter Notebook](reproducible-example.ipynb) demonstrating how this is applied in practice.
+This repository includes the code for the "App" to create an Origin-Destination matrix from a series of school and student postcodes (app on the figure below) and an example [Jupyter Notebook](reproducible-example.ipynb) demonstrating how this is applied in practice.
 
 ![](agile/mermaid-flowchart.png)
 
