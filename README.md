@@ -11,7 +11,7 @@ and an example
 [Jupyter Notebook](https://github.com/UCL/ioe-student-school-allocation/blob/main/reproducible-notebook.ipynb)
 demonstrating how this is applied in practice.
 
-![flowchart](agile/mermaid-flowchart.png)
+![flowchart](https://github.com/UCL/ioe-student-school-allocation/blob/main/agile/mermaid-flowchart.png)
 
 This work was presented at AGILE 2023 by Nick Bearman & Levi Wolf.
 
