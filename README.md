@@ -7,7 +7,7 @@ This repository includes the code for the "app" to create an Origin-Destination 
 
 This work was presented at AGILE 2023 by Nick Bearman & Levi Wolf.
 
-- Presentation [HTML](agile-paper/Presentation.html) [PDF](agile-paper/presentation-Developing capacitated p-median location.pdf)
+- [Presentation](agile-paper/presentation-Developing capacitated p-median location.pdf)
 - [Short-Paper](agile-paper/short-paper.pdf).
 
 Currently (as at 06/06/2023) the new code developed for `spopt` is not integrated in to the main `spopt` version. There is currently a PR in progress for this at https://github.com/pysal/spopt/pull/374.
