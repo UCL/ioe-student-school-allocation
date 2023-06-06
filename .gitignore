@@ -7,6 +7,7 @@ _version.py
 *.csv
 *.egg-info
 *.html
+*.mps
 *.tar.gz
 *.xlsx
 dist
