@@ -8,7 +8,7 @@ placements using public transport.
 This repository includes the code for the "App" to create an Origin-Destination
 matrix from a series of school and student postcodes (app on the figure below)
 and an example
-[Jupyter Notebook](https://github.com/UCL/ioe-student-school-allocation/blob/main/reproducible-notebook.ipynb)
+[Jupyter Notebook](https://github.com/UCL/ioe-student-school-allocation/blob/main/reproducible-example.ipynb)
 demonstrating how this is applied in practice.
 
 ![flowchart](https://github.com/UCL/ioe-student-school-allocation/blob/main/agile/mermaid-flowchart.png)
