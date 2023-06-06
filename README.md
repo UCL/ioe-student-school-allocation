@@ -44,7 +44,7 @@ Then re-run. You can check if it’s worked by running
 Run using
 
 ```sh
-tfl data example_subject
+tfl example_subject
 ```
 
 For more details, see the [Juypter Notebook example](reproducible-example.ipynb).
