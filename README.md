@@ -7,15 +7,16 @@ placements using public transport.
 
 This repository includes the code for the "App" to create an Origin-Destination
 matrix from a series of school and student postcodes (app on the figure below)
-and an example [Jupyter Notebook](reproducible-example.ipynb) demonstrating how
-this is applied in practice.
+and an example
+[Jupyter Notebook](https://github.com/UCL/ioe-student-school-allocation/blob/main/reproducible-notebook.ipynb)
+demonstrating how this is applied in practice.
 
 ![flowchart](agile/mermaid-flowchart.png)
 
 This work was presented at AGILE 2023 by Nick Bearman & Levi Wolf.
 
-- [Presentation](agile/presentation.pdf)
-- [Short Paper](agile/short-paper.pdf)
+- [Presentation](https://github.com/UCL/ioe-student-school-allocation/blob/main/agile/presentation.pdf)
+- [Short Paper](https://github.com/UCL/ioe-student-school-allocation/blob/main/agile/short-paper.pdf)
 
 Currently, (as at 06/06/2023) the new code developed for `spopt` is not
 integrated in to the main `spopt` version. There is currently a PR in progress
@@ -54,4 +55,5 @@ Run using
 tfl example_subject
 ```
 
-For more details, see the [Juypter Notebook example](reproducible-example.ipynb).
+For more details, see the
+[Juypter Notebook example](https://github.com/UCL/ioe-student-school-allocation/blob/main/reproducible-example.ipynb).
